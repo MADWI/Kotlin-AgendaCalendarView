@@ -22,7 +22,7 @@ class DayItem
         override var isToday: Boolean,
         override var month: String) : IDayItem {
 
-    override var dayOftheWeek: Int = 0
+    override var eventsCount: Int = 0
     override var isFirstDayOfTheMonth: Boolean = false
     override var isSelected: Boolean = false
     private var hasEvents: Boolean = false

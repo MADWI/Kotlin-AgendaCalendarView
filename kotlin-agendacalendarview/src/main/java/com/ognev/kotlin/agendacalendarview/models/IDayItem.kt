@@ -4,8 +4,6 @@ import java.util.Date
 
 interface IDayItem {
 
-    // region Getters/Setters
-
     var date: Date
 
     var value: Int
@@ -18,9 +16,7 @@ interface IDayItem {
 
     var month: String
 
-    var dayOftheWeek: Int
-
-    // endregion
+    var eventsCount: Int
 
     override fun toString(): String
 

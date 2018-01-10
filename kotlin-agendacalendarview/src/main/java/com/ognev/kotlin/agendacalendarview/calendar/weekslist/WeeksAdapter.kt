@@ -19,14 +19,15 @@ import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
 import com.ognev.kotlin.agendacalendarview.utils.Events
 import com.ognev.kotlin.agendacalendarview.R
+import com.ognev.kotlin.agendacalendarview.models.IDayItem
 
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
 
 class WeeksAdapter
-(private val mContext: Context, private val mToday: Calendar, val monthColor: Int,val selectedDayTextColor: Int, val currentDayTextColor: Int, val pastDayTextColor: Int,
- val circleColor: Drawable?, val cellPastBackgroundColor: Int, val cellNowadaysDayColor: Int) : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
+(private val mContext: Context, private val mToday: Calendar, val monthColor: Int, val selectedDayTextColor: Int, val currentDayTextColor: Int, val pastDayTextColor: Int,
+    val circleColor: Drawable?, val cellPastBackgroundColor: Int, val cellNowadaysDayColor: Int) : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
     override fun getItemCount(): Int {
         return weeksList.size
     }
@@ -51,13 +52,11 @@ class WeeksAdapter
         weeksList = CalendarManager.instance!!.weeks
     }
 
-
     fun updateWeeksItems(weekItems: List<IWeekItem>) {
         //    this.mWeeksList.clear();
         //    this.mWeeksList.addAll(weekItems);
         notifyDataSetChanged()
     }
-
 
     override
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
@@ -70,7 +69,6 @@ class WeeksAdapter
         val weekItem = weeksList[position]
         weekViewHolder.bindWeek(weekItem, mToday)
     }
-
 
     inner class WeekViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -93,22 +91,20 @@ class WeeksAdapter
 
             val dayItems = weekItem.dayItems
 
-            for (c in 0..dayItems.size - 1) {
+            for (c in 0 until dayItems.size) {
                 val dayItem = dayItems[c]
                 val cellItem = mCells!![c]
                 val txtDay = cellItem.findViewById(R.id.view_day_day_label) as TextView
                 val txtMonth = cellItem.findViewById(R.id.view_day_month_label) as TextView
                 val circleView = cellItem.findViewById(R.id.view_day_circle_selected)
-                val point = cellItem.findViewById(R.id.point)
-                cellItem.setOnClickListener({ v -> BusProvider.instance.send(Events.DayClickedEvent(dayItem)) })
+                val eventsDotsContainer = cellItem.findViewById(R.id.events_dots_container) as LinearLayout
+                cellItem.setOnClickListener { BusProvider.instance.send(Events.DayClickedEvent(dayItem)) }
 
                 circleView.setBackgroundDrawable(circleColor)
-                txtMonth.setVisibility(View.GONE)
+                txtMonth.visibility = View.GONE
                 txtDay.setTextColor(pastDayTextColor)
                 txtMonth.setTextColor(monthColor)
-                circleView.setVisibility(View.GONE)
-
-                //        point.setVisibility(dayItem.hasEvents() ? View.VISIBLE : View.GONE);
+                circleView.visibility = View.GONE
 
                 txtDay.setTypeface(null, Typeface.NORMAL)
                 txtMonth.setTypeface(null, Typeface.NORMAL)
@@ -147,15 +143,15 @@ class WeeksAdapter
                     //          point.setVisibility(View.GONE);
                 }
 
-                point.visibility = if (dayItem.hasEvents()) View.VISIBLE else View.INVISIBLE
+                addEventsDots(eventsDotsContainer, dayItem)
 
                 // Check if the month label has to be displayed
-                if (dayItem.value === 15) {
+                if (dayItem.value == 15) {
                     mTxtMonth.visibility = View.VISIBLE
                     val monthDateFormat = SimpleDateFormat(mContext.getResources().getString(R.string.month_half_name_format), CalendarManager.instance!!.locale)
                     var month = monthDateFormat.format(weekItem.date).toUpperCase()
-                    if (today.get(Calendar.YEAR) !== weekItem.year) {
-                        month = month + String.format(" %d", weekItem.year)
+                    if (today.get(Calendar.YEAR) != weekItem.year) {
+                        month += String.format(" %d", weekItem.year)
                     }
                     mTxtMonth.text = month
                 }
@@ -178,13 +174,12 @@ class WeeksAdapter
                 val animatorTxtAlphaIn = ObjectAnimator.ofFloat(mTxtMonth, "alpha", mTxtMonth.getAlpha(), 1f)
                 val animatorBackgroundAlphaIn = ObjectAnimator.ofFloat(mMonthBackground, "alpha", mMonthBackground.getAlpha(), 1f)
                 animatorSetFadeIn.playTogether(
-                        animatorTxtAlphaIn
-                        //animatorBackgroundAlphaIn
+                    animatorTxtAlphaIn
+                    //animatorBackgroundAlphaIn
                 )
                 animatorSetFadeIn.addListener(object : Animator.AnimatorListener {
                     override
                     fun onAnimationStart(animation: Animator) {
-
                     }
 
                     override
@@ -194,12 +189,10 @@ class WeeksAdapter
 
                     override
                     fun onAnimationCancel(animation: Animator) {
-
                     }
 
                     override
                     fun onAnimationRepeat(animation: Animator) {
-
                     }
                 })
                 animatorSetFadeIn.start()
@@ -209,13 +202,12 @@ class WeeksAdapter
                 val animatorTxtAlphaOut = ObjectAnimator.ofFloat(mTxtMonth, "alpha", mTxtMonth.getAlpha(), 0f)
                 val animatorBackgroundAlphaOut = ObjectAnimator.ofFloat(mMonthBackground, "alpha", mMonthBackground.getAlpha(), 0f)
                 animatorSetFadeOut.playTogether(
-                        animatorTxtAlphaOut
-                        //animatorBackgroundAlphaOut
+                    animatorTxtAlphaOut
+                    //animatorBackgroundAlphaOut
                 )
                 animatorSetFadeOut.addListener(object : Animator.AnimatorListener {
                     override
                     fun onAnimationStart(animation: Animator) {
-
                     }
 
                     override
@@ -225,12 +217,10 @@ class WeeksAdapter
 
                     override
                     fun onAnimationCancel(animation: Animator) {
-
                     }
 
                     override
                     fun onAnimationRepeat(animation: Animator) {
-
                     }
                 })
                 animatorSetFadeOut.start()
@@ -242,6 +232,17 @@ class WeeksAdapter
             } else {
                 //mMonthBackground.setAlpha(0f);
                 mTxtMonth.setAlpha(0f)
+            }
+        }
+
+        private fun addEventsDots(eventsDotsContainer: LinearLayout, dayItem: IDayItem) {
+            if (eventsDotsContainer.childCount == dayItem.eventsCount) {
+                return
+            }
+            eventsDotsContainer.removeAllViews()
+            repeat(dayItem.eventsCount) {
+                val dotView = LayoutInflater.from(mContext).inflate(R.layout.event_dot, eventsDotsContainer, false)
+                eventsDotsContainer.addView(dotView)
             }
         }
     }

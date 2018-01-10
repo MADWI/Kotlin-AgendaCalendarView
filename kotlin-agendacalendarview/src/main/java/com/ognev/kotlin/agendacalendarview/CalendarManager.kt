@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.ognev.kotlin.agendacalendarview.models.*
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
-import com.ognev.kotlin.agendacalendarview.R
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,9 +13,7 @@ import java.util.*
  * Holds reference to the days list of the calendar.
  * As the app is using several views, we want to keep everything in one place.
  */
-class CalendarManager
-
-(val context: Context) {
+class CalendarManager(val context: Context) {
 
     var locale: Locale? = null
         set(locale) {
@@ -47,18 +44,17 @@ class CalendarManager
     var events: MutableList<CalendarEvent> = ArrayList()
         private set
 
-
     lateinit var currentSelectedDay: Calendar
     var currentListPosition: Int = 0
 
     fun buildCal(minDate: Calendar?, maxDate: Calendar?) {
         if (minDate == null || maxDate == null) {
             throw IllegalArgumentException(
-                    "minDate and maxDate must be non-null.")
+                "minDate and maxDate must be non-null.")
         }
-        if (minDate!!.after(maxDate)) {
+        if (minDate.after(maxDate)) {
             throw IllegalArgumentException(
-                    "minDate must be before maxDate.")
+                "minDate must be before maxDate.")
         }
 
         days.clear()
@@ -110,64 +106,31 @@ class CalendarManager
     fun loadInitialEvents(eventList: List<CalendarEvent>) {
         for (weekItem in weeks) {
             for (dayItem in weekItem.dayItems) {
-                for (event in eventList) {
-                    if (DateHelper.isBetweenInclusive(dayItem.date, event.startTime, event.endTime)) {
-                        val copy = event.copy()
-                        val dayInstance = Calendar.getInstance(locale)
-                        dayInstance.time = dayItem.date
-                        copy.setEventInstanceDay(dayInstance)
-                        copy.dayReference = dayItem
-                        copy.weekReference = weekItem
-                        copy.event = event.event;
-                        dayItem.setHasEvents(event.hasEvent())
-                        // add instances in chronological order
-                        events.add(copy)
-                        Log.d("visits", event.startTime.toString())
-                    }
-                }
+                eventList
+                    .filter { DateHelper.isBetweenInclusive(dayItem.date, it.startTime, it.endTime) }
+                    .forEach { addEventToCalendarEvents(it, dayItem, weekItem) }
             }
         }
     }
 
     fun addEvents(eventList: List<CalendarEvent>, noEvent: CalendarEvent) {
-
         for (weekItem in weeks) {
             for (dayItem in weekItem.dayItems) {
                 var isEventForDay = true
                 for (event in eventList) {
                     if (DateHelper.isBetweenInclusive(dayItem.date, event.startTime, event.endTime)) {
-                        val copy = event.copy()
-
-                        val dayInstance = Calendar.getInstance(locale)
-                        dayInstance.setTime(dayItem.date)
-                        copy.setEventInstanceDay(dayInstance)
-                        copy.event = event.event
-                        copy.dayReference = (dayItem)
-                        copy.weekReference = (weekItem)
-                        dayItem.setHasEvents(event.hasEvent())
-                        // add instances in chronological order
-                        events.add(copy)
-                        Log.d("visits", event.startTime.toString())
+                        addEventToCalendarEvents(event, dayItem, weekItem)
                         isEventForDay = event.hasEvent()
                     }
                 }
                 if (!isEventForDay) {
-                    val dayInstance = Calendar.getInstance(locale)
-                    dayInstance.setTime(dayItem.date)
-                    val copy = noEvent.copy()
-
-                    copy.setEventInstanceDay(dayInstance)
-                    copy.dayReference = (dayItem)
-                    copy.weekReference = (weekItem)
-                    events.add(copy)
+                    addEmptyEventToCalendarEvents(dayItem, noEvent, weekItem)
                 }
             }
         }
     }
 
-
     fun addFromStartEvents(eventList: List<CalendarEvent>, noEvent: CalendarEvent) {
-
         val iWeekItems = weeks
         var dayItems: List<IDayItem>
         for (i in iWeekItems.size - 1 downTo 0) {
@@ -180,32 +143,52 @@ class CalendarManager
                     val event = eventList[l]
                     if (DateHelper.isBetweenInclusive(dayItem.date, event.startTime, event.endTime)) {
                         val copy = event.copy()
-
-                        dayItem.setHasEvents(event.hasEvent())
                         val dayInstance = Calendar.getInstance(locale)
                         dayInstance.time = dayItem.date
+
+                        dayItem.setHasEvents(event.hasEvent())
+                        if (event.hasEvent()) {
+                            dayItem.eventsCount += 1
+                        }
                         copy.setEventInstanceDay(dayInstance)
-                        copy.dayReference = (dayItem)
                         copy.event = event.event
+                        copy.dayReference = (dayItem)
                         copy.weekReference = (weekItem)
-                        // add instances in chronological order
                         events.add(0, copy)
-                        Log.d("visits", event.startTime.toString())
                         isEventForDay = event.hasEvent()
                     }
                 }
                 if (!isEventForDay) {
-                    val dayInstance = Calendar.getInstance(locale)
-                    dayInstance.time = dayItem.date
-                    val copy = noEvent.copy()
-
-                    copy.setEventInstanceDay(dayInstance)
-                    copy.dayReference = (dayItem)
-                    copy.weekReference = (weekItem)
-                    events.add(copy)
+                    addEmptyEventToCalendarEvents(dayItem, noEvent, weekItem)
                 }
             }
         }
+    }
+
+    private fun addEventToCalendarEvents(event: CalendarEvent, dayItem: IDayItem, weekItem: IWeekItem) {
+        val copy = event.copy()
+        val dayInstance = Calendar.getInstance(locale)
+        dayInstance.time = dayItem.date
+        copy.setEventInstanceDay(dayInstance)
+        copy.event = event.event
+        copy.dayReference = dayItem
+        copy.weekReference = weekItem
+        dayItem.setHasEvents(event.hasEvent())
+        if (event.hasEvent()) {
+            dayItem.eventsCount += 1
+        }
+        events.add(copy)
+    }
+
+    private fun addEmptyEventToCalendarEvents(dayItem: IDayItem, noEvent: CalendarEvent, weekItem: IWeekItem) {
+        val dayInstance = Calendar.getInstance(locale)
+        dayInstance.time = dayItem.date
+        val copy = noEvent.copy()
+
+        copy.setEventInstanceDay(dayInstance)
+        copy.dayReference = (dayItem)
+        copy.weekReference = (weekItem)
+        events.add(copy)
     }
 
     fun loadCal(lWeeks: MutableList<IWeekItem>, lDays: MutableList<IDayItem>, lEvents: MutableList<CalendarEvent>) {
@@ -250,5 +233,4 @@ class CalendarManager
             return instance as CalendarManager
         }
     }
-
 }
