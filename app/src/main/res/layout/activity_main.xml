@@ -19,6 +19,8 @@
         agendaCalendar:calendarPastDayTextColor="@android:color/darker_gray"
         agendaCalendar:cellPastBackgroundColor="@color/calendar_past_days_bg"
         agendaCalendar:cellNowadaysDayColor="@color/white"
+        agendaCalendar:cellEventMarkColor="@color/blue_selected"
+        agendaCalendar:cellEventPlusShowThreshold="1"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp" />
 

@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.annotation.NonNull
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -42,8 +43,10 @@ class AgendaCalendarView : FrameLayout, StickyListHeadersListView.OnStickyHeader
     private var mCalendarCurrentDayColor: Int = 0
     private var mFabColor: Int = 0
     private var calendarController: CalendarController? = null
+    private var cellEventMarkColor: Int = 0
+    private var cellEventPlusShowThreshold: Int = 0
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
 
@@ -57,9 +60,9 @@ class AgendaCalendarView : FrameLayout, StickyListHeadersListView.OnStickyHeader
         cellNowadaysDayColor = a.getColor(R.styleable.ColorOptionsView_cellNowadaysDayColor, getResources().getColor(R.color.white))
         cellPastBackgroundColor = a.getColor(R.styleable.ColorOptionsView_cellPastBackgroundColor, getResources().getColor(R.color.calendar_past_days_bg))
         mFabColor = a.getColor(R.styleable.ColorOptionsView_fabColor, getResources().getColor(R.color.theme_accent))
-
-        val inflater = context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        cellEventMarkColor = a.getColor(R.styleable.ColorOptionsView_cellEventMarkColor, ContextCompat.getColor(context, R.color.azure))
+        cellEventPlusShowThreshold = a.getColor(R.styleable.ColorOptionsView_cellEventPlusShowThreshold, 2)
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         inflater.inflate(R.layout.view_agendacalendar, this, true)
 
         setAlpha(0f)
@@ -134,7 +137,7 @@ class AgendaCalendarView : FrameLayout, StickyListHeadersListView.OnStickyHeader
 
         // Feed our views with weeks MutableList and events
         mCalendarView!!.init(CalendarManager.getInstance(context), monthCalendarColor, selectedDayTextColor, mCalendarCurrentDayColor, mCalendarPastDayTextColor,
-                circleBackgroundColor, cellPastBackgroundColor, cellNowadaysDayColor)
+            circleBackgroundColor, cellPastBackgroundColor, cellNowadaysDayColor, cellEventMarkColor, cellEventPlusShowThreshold)
 
         // Load agenda events and scroll to current day
         val agendaAdapter = AgendaAdapter()

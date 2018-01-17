@@ -6,6 +6,8 @@
 	<dimen name="text_month_size">18dp</dimen>
 	<dimen name="text_day_size">14dp</dimen>
 	<dimen name="circle_selected_size">32dp</dimen>
+	<dimen name="event_dot_size">5dp</dimen>
+	<dimen name="event_plus_size">6dp</dimen>
 
 	<!-- Agenda values -->
 	<dimen name="circle_event_color_size">14dp</dimen>

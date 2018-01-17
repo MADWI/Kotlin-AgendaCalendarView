@@ -114,7 +114,7 @@ open class CalendarView : LinearLayout {
     // region Public methods
 
     fun init(calendarManager: CalendarManager, monthColor: Int, selectedDayTextColor: Int, currentDayTextColor: Int, pastDayTextColor: Int, circleColor: Drawable?
-             , cellPastBackgroundColor: Int, cellNowadaysDayColor: Int) {
+             , cellPastBackgroundColor: Int, cellNowadaysDayColor: Int, cellEventMarkColor: Int, cellEventPlusShowThreshold: Int) {
         val today = calendarManager.today
         val locale = calendarManager.locale
         val weekDayFormatter = calendarManager.weekdayFormatter
@@ -122,7 +122,7 @@ open class CalendarView : LinearLayout {
 
         setUpHeader(today, weekDayFormatter!!, locale!!)
         setUpAdapter(today, weeks, monthColor, selectedDayTextColor, currentDayTextColor, pastDayTextColor, circleColor
-        , cellPastBackgroundColor, cellNowadaysDayColor)
+        , cellPastBackgroundColor, cellNowadaysDayColor, cellEventMarkColor, cellEventPlusShowThreshold)
         scrollToDate(today, weeks)
     }
 
@@ -173,11 +173,11 @@ open class CalendarView : LinearLayout {
      * Creates a new adapter if necessary and sets up its parameters.
      */
     private fun setUpAdapter(today: Calendar, weeks: List<IWeekItem>, monthColor: Int, selectedDayTextColor: Int, currentDayTextColor: Int, pastDayTextColor: Int,
-                             circleBackgroundColor: Drawable?, cellPastBackgroundColor: Int, cellNowadaysDayColor: Int) {
+        circleBackgroundColor: Drawable?, cellPastBackgroundColor: Int, cellNowadaysDayColor: Int, cellEventMarkColor: Int, cellEventPlusShowThreshold: Int) {
         if (mWeeksAdapter == null) {
             Log.d(LOG_TAG, "Setting adapter with today's calendar: " + today.toString())
             mWeeksAdapter = WeeksAdapter(context, today, monthColor, selectedDayTextColor, currentDayTextColor, pastDayTextColor,
-                    circleBackgroundColor, cellPastBackgroundColor, cellNowadaysDayColor )
+                    circleBackgroundColor, cellPastBackgroundColor, cellNowadaysDayColor, cellEventMarkColor, cellEventPlusShowThreshold)
             listViewWeeks!!.setAdapter(mWeeksAdapter)
         }
         mWeeksAdapter!!.updateWeeksItems(weeks)

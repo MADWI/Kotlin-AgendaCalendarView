@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.CalendarManager
@@ -27,10 +29,10 @@ import java.util.Calendar
 
 class WeeksAdapter
 (private val mContext: Context, private val mToday: Calendar, val monthColor: Int, val selectedDayTextColor: Int, val currentDayTextColor: Int, val pastDayTextColor: Int,
-    val circleColor: Drawable?, val cellPastBackgroundColor: Int, val cellNowadaysDayColor: Int) : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
-    override fun getItemCount(): Int {
-        return weeksList.size
-    }
+    val circleColor: Drawable?, val cellPastBackgroundColor: Int, val cellNowadaysDayColor: Int, val cellEventMarkColor: Int, val cellEventPlusShowThreshold: Int)
+    : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
+
+    override fun getItemCount() = weeksList.size
 
     val weeksList: List<IWeekItem>
     var isDragging: Boolean = false
@@ -143,7 +145,7 @@ class WeeksAdapter
                     //          point.setVisibility(View.GONE);
                 }
 
-                addEventsDots(eventsDotsContainer, dayItem)
+                addEventsMarks(eventsDotsContainer, dayItem)
 
                 // Check if the month label has to be displayed
                 if (dayItem.value == 15) {
@@ -235,14 +237,21 @@ class WeeksAdapter
             }
         }
 
-        private fun addEventsDots(eventsDotsContainer: LinearLayout, dayItem: IDayItem) {
-            if (eventsDotsContainer.childCount == dayItem.eventsCount) {
+        private fun addEventsMarks(eventsMarksContainer: LinearLayout, dayItem: IDayItem) {
+            if (eventsMarksContainer.childCount == dayItem.eventsCount) {
                 return
             }
-            eventsDotsContainer.removeAllViews()
+            eventsMarksContainer.removeAllViews()
             repeat(dayItem.eventsCount) {
-                val dotView = LayoutInflater.from(mContext).inflate(R.layout.event_dot, eventsDotsContainer, false)
-                eventsDotsContainer.addView(dotView)
+                if (it >= cellEventPlusShowThreshold) {
+                    val plusView = LayoutInflater.from(mContext).inflate(R.layout.event_plus, eventsMarksContainer, false) as ImageView
+                    plusView.setColorFilter(cellEventMarkColor)
+                    eventsMarksContainer.addView(plusView)
+                    return
+                }
+                val dotView = LayoutInflater.from(mContext).inflate(R.layout.event_dot, eventsMarksContainer, false)
+                dotView.background.setColorFilter(cellEventMarkColor, PorterDuff.Mode.SRC_ATOP)
+                eventsMarksContainer.addView(dotView)
             }
         }
     }
