@@ -7,28 +7,16 @@ import java.util.Calendar
 /**
  * Events emitted by the bus provider.
  */
-class Events {
+sealed class Event
 
-    open class DayClickedEvent(var day: IDayItem) {
+class FetchedEvent : Event()
 
-        var calendar: Calendar
+class CalendarScrolledEvent : Event()
 
-        init {
-            this.calendar = Calendar.getInstance()
-            this.calendar.time = day.date
-        }
+class AgendaListViewTouchedEvent : Event()
+
+class DayClickedEvent(val day: IDayItem) : Event() {
+    var calendar: Calendar = Calendar.getInstance().also {
+        it.time = day.date
     }
-
-    open class CalendarScrolledEvent {
-        companion object {
-            var variableName = object : CalendarScrolledEvent() {
-            }
-        }
-    }
-
-    open class AgendaListViewTouchedEvent
-
-    open class EventsFetched
-
-    open class ForecastFetched
 }

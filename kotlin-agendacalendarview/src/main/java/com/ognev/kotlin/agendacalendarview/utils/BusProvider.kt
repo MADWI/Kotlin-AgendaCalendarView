@@ -1,39 +1,17 @@
 package com.ognev.kotlin.agendacalendarview.utils
 
-import rx.Observable
 import rx.subjects.PublishSubject
 import rx.subjects.SerializedSubject
 
 class BusProvider {
 
-    private val mBus = SerializedSubject<Any, Any>(PublishSubject.create())
+    private val bus = SerializedSubject<Any, Any>(PublishSubject.create())
 
-    // endregion
+    fun send(event: Event) = bus.onNext(event)
 
-    // region Public methods
-
-    fun send(`object`: Any) {
-        mBus.onNext(`object`)
-    }
-
-    fun toObserverable(): Observable<Any> {
-        return mBus
-    }
+    fun toObservable() = bus
 
     companion object {
-
-        var mInstance: BusProvider? = null
-
-        // region Constructors
-
-        val instance: BusProvider
-            get() {
-                if (mInstance == null) {
-                    mInstance = BusProvider()
-                }
-                return mInstance!!
-            }
+        val instance: BusProvider = BusProvider()
     }
-
-
 }

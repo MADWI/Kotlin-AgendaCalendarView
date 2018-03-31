@@ -17,9 +17,11 @@ import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
+import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouchedEvent
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
+import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolledEvent
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
-import com.ognev.kotlin.agendacalendarview.utils.Events
+import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -86,12 +88,12 @@ open class CalendarView : LinearLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        BusProvider.instance.toObserverable()
+        BusProvider.instance.toObservable()
             .subscribe({ event ->
                 when (event) {
-                    is Events.CalendarScrolledEvent -> expandCalendarView()
-                    is Events.AgendaListViewTouchedEvent -> collapseCalendarView()
-                    is Events.DayClickedEvent -> updateSelectedDay(event.calendar, event.day)
+                    is CalendarScrolledEvent -> expandCalendarView()
+                    is AgendaListViewTouchedEvent -> collapseCalendarView()
+                    is DayClickedEvent -> updateSelectedDay(event.calendar, event.day)
                 }
             })
     }

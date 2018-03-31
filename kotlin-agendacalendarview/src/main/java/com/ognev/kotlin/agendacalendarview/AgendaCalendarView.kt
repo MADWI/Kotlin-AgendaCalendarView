@@ -20,7 +20,8 @@ import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.render.DefaultEventAdapter
 import com.ognev.kotlin.agendacalendarview.render.EventAdapter
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.Events
+import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
+import com.ognev.kotlin.agendacalendarview.utils.FetchedEvent
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 
 /**
@@ -60,16 +61,16 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaView = findViewById(R.id.agenda_view) as AgendaView
         calendarView.findViewById(R.id.cal_day_names).setBackgroundColor(viewAttributes.headerColor)
 
-        BusProvider.instance.toObserverable()
-            .subscribe({ event ->
-                if (event is Events.DayClickedEvent) {
-                    calendarController!!.onDaySelected((event).day)
-                } else if (event is Events.EventsFetched) {
+        BusProvider.instance.toObservable()
+            .subscribe { event ->
+                if (event is DayClickedEvent) {
+                    calendarController!!.onDaySelected(event.day)
+                } else if (event is FetchedEvent) {
                     ObjectAnimator.ofFloat(this, "alpha", alpha, 1f)
                         .setDuration(500)
                         .start()
                 }
-            })
+            }
     }
 
     override
@@ -97,7 +98,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaView.agendaListView.setOnStickyHeaderChangedListener(this)
 
         // notify that actually everything is loaded
-        BusProvider.instance.send(Events.EventsFetched())
+        BusProvider.instance.send(FetchedEvent())
         // add default event renderer
         addEventRenderer(sampleAgendaAdapter)
     }
