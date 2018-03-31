@@ -60,6 +60,8 @@ class AgendaCalendarView : FrameLayout, StickyListHeadersListView.OnStickyHeader
         cellNowadaysDayColor = a.getColor(R.styleable.ColorOptionsView_cellNowadaysDayColor, ContextCompat.getColor(context, R.color.white))
         cellPastBackgroundColor = a.getColor(R.styleable.ColorOptionsView_cellPastBackgroundColor, ContextCompat.getColor(context, R.color.calendar_past_days_bg))
         mFabColor = a.getColor(R.styleable.ColorOptionsView_fabColor, ContextCompat.getColor(context, R.color.theme_accent))
+        cellEventMarkColor = a.getColor(R.styleable.ColorOptionsView_cellEventMarkColor, ContextCompat.getColor(context, R.color.azure))
+        cellEventPlusShowThreshold = a.getColor(R.styleable.ColorOptionsView_cellEventPlusShowThreshold, 2)
 
         val inflater = context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
