@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.annotation.NonNull
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
