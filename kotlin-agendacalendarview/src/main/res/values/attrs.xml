@@ -12,6 +12,5 @@
 		<attr name="cellNowadaysDayColor" format="color"/>
 		<attr name="cellEventMarkColor" format="color"/>
 		<attr name="cellEventPlusShowThreshold" format="integer"/>
-		<attr name="fabColor" format="color"/>
 	</declare-styleable>
 </resources>

@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,21 +15,19 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.CalendarManager
+import com.ognev.kotlin.agendacalendarview.R
+import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
+import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
 import com.ognev.kotlin.agendacalendarview.utils.Events
-import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
-
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
 
-class WeeksAdapter
-(private val mContext: Context, private val mToday: Calendar, val monthColor: Int, val selectedDayTextColor: Int, val currentDayTextColor: Int, val pastDayTextColor: Int,
-    val circleColor: Drawable?, val cellPastBackgroundColor: Int, val cellNowadaysDayColor: Int, val cellEventMarkColor: Int, val cellEventPlusShowThreshold: Int)
-    : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
+class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
+    val viewAttributes: AgendaCalendarViewAttributes) : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
     override fun getItemCount() = weeksList.size
 
@@ -43,14 +40,8 @@ class WeeksAdapter
             }
         }
     var isAlphaSet: Boolean = false
-//    private val mDayTextColor: Int
-//    private val mPastDayTextColor: Int
-//    private val mCurrentDayColor: Int
 
     init {
-//        this.mDayTextColor = Color.parseColor("#7685a2")
-//        this.mCurrentDayColor = Color.parseColor("#4a76c8")
-//        this.mPastDayTextColor = Color.parseColor("#7685a2")
         weeksList = CalendarManager.instance!!.weeks
     }
 
@@ -62,7 +53,7 @@ class WeeksAdapter
 
     override
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
-        val view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_week, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_week, parent, false)
         return WeekViewHolder(view)
     }
 
@@ -102,10 +93,10 @@ class WeeksAdapter
                 val eventsDotsContainer = cellItem.findViewById(R.id.events_dots_container) as LinearLayout
                 cellItem.setOnClickListener { BusProvider.instance.send(Events.DayClickedEvent(dayItem)) }
 
-                circleView.setBackgroundDrawable(circleColor)
+                circleView.setBackgroundDrawable(viewAttributes.circleBackgroundColor)
                 txtMonth.visibility = View.GONE
-                txtDay.setTextColor(pastDayTextColor)
-                txtMonth.setTextColor(monthColor)
+                txtDay.setTextColor(viewAttributes.pastDayTextColor)
+                txtMonth.setTextColor(viewAttributes.monthTextColor)
                 circleView.visibility = View.GONE
 
                 txtDay.setTypeface(null, Typeface.NORMAL)
@@ -124,25 +115,22 @@ class WeeksAdapter
 
                 // Check if this day is in the past
                 if (today.time.after(dayItem.date) && !DateHelper.sameDate(today, dayItem.date)) {
-                    txtDay.setTextColor(pastDayTextColor)
-                    txtMonth.setTextColor(monthColor)
-                    cellItem.setBackgroundColor(cellPastBackgroundColor)
+                    txtDay.setTextColor(viewAttributes.pastDayTextColor)
+                    txtMonth.setTextColor(viewAttributes.monthTextColor)
+                    cellItem.setBackgroundColor(viewAttributes.cellPastBackgroundColor)
                 } else {
-                    cellItem.setBackgroundColor(cellNowadaysDayColor)
+                    cellItem.setBackgroundColor(viewAttributes.cellNowadaysDayColor)
                 }
 
                 // Highlight the cell if this day is today
                 if (dayItem.isToday && !dayItem.isSelected) {
-                    txtDay.setTextColor(currentDayTextColor)
+                    txtDay.setTextColor(viewAttributes.currentDayTextColor)
                 }
 
                 // Show a circle if the day is selected
                 if (dayItem.isSelected) {
-                    txtDay.setTextColor(selectedDayTextColor)
+                    txtDay.setTextColor(viewAttributes.selectedDayTextColor)
                     circleView.visibility = View.VISIBLE
-                    //          GradientDrawable drawable = (GradientDrawable) circleView.getBackground();
-                    //          drawable.setStroke((int) (1 * Resources.getSystem().getDisplayMetrics().density), mDayTextColor);
-                    //          point.setVisibility(View.GONE);
                 }
 
                 addEventsMarks(eventsDotsContainer, dayItem)
@@ -243,23 +231,20 @@ class WeeksAdapter
             }
             eventsMarksContainer.removeAllViews()
             repeat(dayItem.eventsCount) {
-                if (it >= cellEventPlusShowThreshold) {
+                if (it >= viewAttributes.cellEventPlusShowThreshold) {
                     val plusView = LayoutInflater.from(mContext).inflate(R.layout.event_plus, eventsMarksContainer, false) as ImageView
-                    plusView.setColorFilter(cellEventMarkColor)
+                    plusView.setColorFilter(viewAttributes.cellEventMarkColor)
                     eventsMarksContainer.addView(plusView)
                     return
                 }
                 val dotView = LayoutInflater.from(mContext).inflate(R.layout.event_dot, eventsMarksContainer, false)
-                dotView.background.setColorFilter(cellEventMarkColor, PorterDuff.Mode.SRC_ATOP)
+                dotView.background.setColorFilter(viewAttributes.cellEventMarkColor, PorterDuff.Mode.SRC_ATOP)
                 eventsMarksContainer.addView(dotView)
             }
         }
     }
 
     companion object {
-
-        val FADE_DURATION: Long = 250
+        const val FADE_DURATION: Long = 250
     }
-
-    // endregion
 }
