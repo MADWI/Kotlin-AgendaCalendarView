@@ -89,7 +89,7 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
                 val cellItem = mCells!![c]
                 val txtDay = cellItem.findViewById(R.id.view_day_day_label) as TextView
                 val txtMonth = cellItem.findViewById(R.id.view_day_month_label) as TextView
-                val circleView = cellItem.findViewById(R.id.view_day_circle_selected)
+                val circleView = cellItem.findViewById<View>(R.id.view_day_circle_selected)
                 val eventsDotsContainer = cellItem.findViewById(R.id.events_dots_container) as LinearLayout
                 cellItem.setOnClickListener { BusProvider.instance.send(DayClickedEvent(dayItem)) }
 

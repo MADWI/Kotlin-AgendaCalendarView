@@ -29,12 +29,12 @@ class AgendaView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         inflater.inflate(R.layout.view_agenda, this, true)
-        findViewById(R.id.refresh_layout).isEnabled = false
+        findViewById<View>(R.id.refresh_layout).isEnabled = false
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        agendaListView = findViewById(R.id.agenda_listview) as AgendaListView
+        agendaListView = findViewById(R.id.agenda_listview)
         shadowView = findViewById(R.id.view_shadow)
 
         BusProvider.instance.toObservable()

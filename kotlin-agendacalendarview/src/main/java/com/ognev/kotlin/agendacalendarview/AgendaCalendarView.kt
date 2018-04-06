@@ -57,9 +57,9 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        calendarView = findViewById(R.id.calendar_view) as CalendarView
-        agendaView = findViewById(R.id.agenda_view) as AgendaView
-        calendarView.findViewById(R.id.cal_day_names).setBackgroundColor(viewAttributes.headerColor)
+        calendarView = findViewById(R.id.calendar_view)
+        agendaView = findViewById(R.id.agenda_view)
+        calendarView.findViewById<View>(R.id.cal_day_names).setBackgroundColor(viewAttributes.headerColor)
 
         BusProvider.instance.toObservable()
             .subscribe { event ->
