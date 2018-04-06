@@ -1,8 +1,5 @@
 package com.ognev.kotlin.agendacalendarview.calendar.weekslist
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.Typeface
@@ -156,73 +153,30 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
         }
 
         private fun setUpMonthOverlay() {
-            mTxtMonth.setVisibility(View.GONE)
-
-            if (isDragging) {
-                val animatorSetFadeIn = AnimatorSet()
-                animatorSetFadeIn.setDuration(FADE_DURATION)
-                val animatorTxtAlphaIn = ObjectAnimator.ofFloat(mTxtMonth, "alpha", mTxtMonth.getAlpha(), 1f)
-                val animatorBackgroundAlphaIn = ObjectAnimator.ofFloat(mMonthBackground, "alpha", mMonthBackground.getAlpha(), 1f)
-                animatorSetFadeIn.playTogether(
-                    animatorTxtAlphaIn
-                    //animatorBackgroundAlphaIn
-                )
-                animatorSetFadeIn.addListener(object : Animator.AnimatorListener {
-                    override
-                    fun onAnimationStart(animation: Animator) {
-                    }
-
-                    override
-                    fun onAnimationEnd(animation: Animator) {
-                        isAlphaSet = true
-                    }
-
-                    override
-                    fun onAnimationCancel(animation: Animator) {
-                    }
-
-                    override
-                    fun onAnimationRepeat(animation: Animator) {
-                    }
-                })
-                animatorSetFadeIn.start()
-            } else {
-                val animatorSetFadeOut = AnimatorSet()
-                animatorSetFadeOut.setDuration(FADE_DURATION)
-                val animatorTxtAlphaOut = ObjectAnimator.ofFloat(mTxtMonth, "alpha", mTxtMonth.getAlpha(), 0f)
-                val animatorBackgroundAlphaOut = ObjectAnimator.ofFloat(mMonthBackground, "alpha", mMonthBackground.getAlpha(), 0f)
-                animatorSetFadeOut.playTogether(
-                    animatorTxtAlphaOut
-                    //animatorBackgroundAlphaOut
-                )
-                animatorSetFadeOut.addListener(object : Animator.AnimatorListener {
-                    override
-                    fun onAnimationStart(animation: Animator) {
-                    }
-
-                    override
-                    fun onAnimationEnd(animation: Animator) {
-                        isAlphaSet = false
-                    }
-
-                    override
-                    fun onAnimationCancel(animation: Animator) {
-                    }
-
-                    override
-                    fun onAnimationRepeat(animation: Animator) {
-                    }
-                })
-                animatorSetFadeOut.start()
-            }
-
+            mTxtMonth.visibility = View.GONE
+            animateMonthTextAlpha()
             if (isAlphaSet) {
-                //mMonthBackground.setAlpha(1f);
-                mTxtMonth.setAlpha(1f)
+                mTxtMonth.alpha = 1f
             } else {
-                //mMonthBackground.setAlpha(0f);
-                mTxtMonth.setAlpha(0f)
+                mTxtMonth.alpha = 0f
             }
+        }
+
+        private fun animateMonthTextAlpha() {
+            if (isDragging) {
+                animateAlphaForView(mTxtMonth, 1f) { isAlphaSet = true }
+            } else {
+                animateAlphaForView(mTxtMonth, 0f) { isAlphaSet = false }
+            }
+        }
+
+        private fun animateAlphaForView(view: View, toAlpha: Float, endAction: () -> Unit) {
+            view.animate()
+                .setDuration(FADE_DURATION)
+                .alpha(toAlpha)
+                .withEndAction {
+                    endAction.invoke()
+                }
         }
 
         private fun addEventsMarks(eventsMarksContainer: LinearLayout, dayItem: IDayItem) {

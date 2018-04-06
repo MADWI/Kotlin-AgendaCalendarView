@@ -1,6 +1,5 @@
 package com.ognev.kotlin.agendacalendarview
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.support.annotation.ColorRes
 import android.support.annotation.NonNull
@@ -52,7 +51,6 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         )
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         inflater.inflate(R.layout.view_agendacalendar, this, true)
-        alpha = 0f
     }
 
     override fun onFinishInflate() {
@@ -65,10 +63,6 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
             .subscribe { event ->
                 if (event is DayClickedEvent) {
                     calendarController!!.onDaySelected(event.day)
-                } else if (event is FetchedEvent) {
-                    ObjectAnimator.ofFloat(this, "alpha", alpha, 1f)
-                        .setDuration(500)
-                        .start()
                 }
             }
     }

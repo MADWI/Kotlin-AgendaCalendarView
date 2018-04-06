@@ -1,7 +1,5 @@
 package com.ognev.kotlin.agendacalendarview.agenda
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -23,6 +21,8 @@ class AgendaView : FrameLayout {
     lateinit var agendaListView: AgendaListView
         private set
     private lateinit var shadowView: View
+    private val translationDuration =
+        context.resources.getInteger(R.integer.agenda_view_translation_duration).toLong()
 
     constructor(context: Context) : super(context)
 
@@ -43,7 +43,7 @@ class AgendaView : FrameLayout {
                     is DayClickedEvent -> agendaListView.scrollToCurrentDate(event.calendar)
                     is CalendarScrolledEvent -> {
                         val offset = (3 * resources.getDimension(R.dimen.day_cell_height))
-                        translateList(offset.toInt())
+                        translateY(offset)
                     }
                     is FetchedEvent -> onEventsFetched()
                 }
@@ -78,39 +78,31 @@ class AgendaView : FrameLayout {
     override
     fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
-            // if the user touches the listView, we put it back to the top
-            translateList(0)
+            translateY(0f)
         }
         return super.dispatchTouchEvent(event)
     }
 
-    private fun translateList(targetY: Int) {
-        if (targetY != translationY.toInt()) {
-            val mover = ObjectAnimator.ofFloat(this, "translationY", targetY.toFloat())
-            mover.duration = 150
-            mover.addListener(object : Animator.AnimatorListener {
-                override
-                fun onAnimationStart(animation: Animator) {
-                    shadowView.visibility = GONE
-                }
-
-                override
-                fun onAnimationEnd(animation: Animator) {
-                    if (targetY == 0) {
-                        BusProvider.instance.send(AgendaListViewTouchedEvent())
-                    }
-                    shadowView.visibility = VISIBLE
-                }
-
-                override
-                fun onAnimationCancel(animation: Animator) {
-                }
-
-                override
-                fun onAnimationRepeat(animation: Animator) {
-                }
-            })
-            mover.start()
+    private fun translateY(endY: Float) {
+        if (endY == translationY) {
+            return
         }
+        animate()
+            .translationY(endY)
+            .setDuration(translationDuration)
+            .withStartAction { hideShadow() }
+            .withEndAction { onTranslationEnd(endY) }
+            .start()
+    }
+
+    private fun onTranslationEnd(endY: Float) {
+        if (endY == 0f) {
+            BusProvider.instance.send(AgendaListViewTouchedEvent())
+        }
+        shadowView.visibility = VISIBLE
+    }
+
+    private fun hideShadow() {
+        shadowView.visibility = GONE
     }
 }
