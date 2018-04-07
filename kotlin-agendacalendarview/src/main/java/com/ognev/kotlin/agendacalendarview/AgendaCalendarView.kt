@@ -14,19 +14,18 @@ import com.ognev.kotlin.agendacalendarview.agenda.AgendaView
 import com.ognev.kotlin.agendacalendarview.calendar.CalendarView
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
-import com.ognev.kotlin.agendacalendarview.models.IWeekItem
-import com.ognev.kotlin.agendacalendarview.render.DefaultEventAdapter
 import com.ognev.kotlin.agendacalendarview.render.EventAdapter
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
 import com.ognev.kotlin.agendacalendarview.utils.FetchedEvent
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
+import java.util.Calendar
 
 /**
  * View holding the agenda and calendar view together.
  */
-class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs), StickyListHeadersListView.OnStickyHeaderChangedListener {
+class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs),
+    StickyListHeadersListView.OnStickyHeaderChangedListener {
 
     lateinit var agendaView: AgendaView
         private set
@@ -80,10 +79,12 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         this.calendarController = calendarController
     }
 
-    fun init(weeks: MutableList<IWeekItem>, days: MutableList<IDayItem>,
-        events: MutableList<CalendarEvent>, sampleAgendaAdapter: DefaultEventAdapter) {
-
-        CalendarManager.getInstance(context).loadCal(weeks, days, events)
+    fun init(minDate: Calendar, maxDate: Calendar, sampleAgendaAdapter: EventAdapter<CalendarEvent>, events: List<CalendarEvent>) {
+        CalendarManager.getInstance(context).apply {
+            buildCal(minDate, maxDate)
+            loadInitialEvents(events)
+            loadCal(weeks, days, this.events)
+        }
         calendarView.init(CalendarManager.getInstance(context), viewAttributes)
 
         // Load agenda events and scroll to current day

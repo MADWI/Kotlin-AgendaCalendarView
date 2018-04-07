@@ -104,7 +104,7 @@ open class CalendarView : LinearLayout {
         val weekDayFormatter = calendarManager.weekdayFormatter
         val weeks = calendarManager.weeks
 
-        setUpHeader(today, weekDayFormatter!!, locale!!)
+        setUpHeader(today, weekDayFormatter, locale)
         setUpAdapter(today, weeks, agendaCalendarViewAttributes)
         scrollToDate(today, weeks)
     }

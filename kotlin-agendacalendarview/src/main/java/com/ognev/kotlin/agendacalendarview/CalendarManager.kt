@@ -1,12 +1,16 @@
 package com.ognev.kotlin.agendacalendarview
 
 import android.content.Context
-import android.util.Log
-import com.ognev.kotlin.agendacalendarview.models.*
+import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.models.IDayItem
+import com.ognev.kotlin.agendacalendarview.models.IWeekItem
+import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
-
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.ArrayList
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * This class manages information about the calendar. (Events, weather info...)
@@ -15,17 +19,17 @@ import java.util.*
  */
 class CalendarManager(val context: Context) {
 
-    var locale: Locale? = null
+    var locale: Locale = Locale.ENGLISH
         set(locale) {
             field = locale
             today = Calendar.getInstance(this.locale)
-            weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), this.locale)
+            weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), locale)
             monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
         }
     var today = Calendar.getInstance(locale)
-    var weekdayFormatter: SimpleDateFormat? = null
+    var weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), locale)
         private set
-    var monthHalfNameFormat: SimpleDateFormat? = null
+    var monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
         private set
 
     /**
@@ -83,7 +87,7 @@ class CalendarManager(val context: Context) {
         // Loop through the weeks
         while ((currentMonth <= maxMonth // Up to, including the month.
                 || currentYear < maxYear) // Up to the year.
-                && currentYear < maxYear + 1) { // But not > next yr.
+            && currentYear < maxYear + 1) { // But not > next yr.
 
             val date = mWeekCounter.time
             // Build our week list
@@ -147,7 +151,7 @@ class CalendarManager(val context: Context) {
         cal.add(Calendar.DATE, offset)
 
         for (c in 0..6) {
-            val dayItem = DayItem.buildDayItemFromCal(cal)
+            val dayItem = DayItem.buildDayItemFromCal(cal, context, locale)
             dayItems.add(dayItem)
             cal.add(Calendar.DATE, 1)
         }

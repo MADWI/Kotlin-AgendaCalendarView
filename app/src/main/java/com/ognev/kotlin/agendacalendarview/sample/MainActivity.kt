@@ -2,11 +2,7 @@ package com.ognev.kotlin.agendacalendarview.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.widget.AdapterView
-import android.widget.Toast
 import com.ognev.kotlin.agendacalendarview.CalendarController
-import com.ognev.kotlin.agendacalendarview.builder.CalendarContentManager
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
@@ -16,45 +12,52 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity(), CalendarController {
 
-    private var eventList: MutableList<CalendarEvent> = ArrayList()
-    private lateinit var minDate: Calendar
-    private lateinit var maxDate: Calendar
-    private lateinit var contentManager: CalendarContentManager
+    private val locale = Locale.ENGLISH
+    private val maxDate: Calendar by lazy {
+        Calendar.getInstance().apply {
+            add(Calendar.YEAR, 1)
+        }
+    }
+    private val minDate: Calendar by lazy {
+        Calendar.getInstance().apply {
+            add(Calendar.MONTH, -10)
+            add(Calendar.YEAR, -1)
+            set(Calendar.DAY_OF_MONTH, 1)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupCalendar()
+    }
 
-        minDate = Calendar.getInstance()
-        maxDate = Calendar.getInstance()
-
-        minDate.add(Calendar.MONTH, -10)
-        minDate.add(Calendar.YEAR, -1)
-        minDate.set(Calendar.DAY_OF_MONTH, 1)
-        maxDate.add(Calendar.YEAR, 1)
-
-
-        contentManager = CalendarContentManager(this, agenda_calendar_view, SampleEventAgendaAdapter(applicationContext))
-
-        contentManager.locale = Locale.ENGLISH
-        contentManager.setDateRange(minDate, maxDate)
-
-        val maxLength = Calendar.getInstance().getMaximum(Calendar.DAY_OF_MONTH)
-
-        for (i in 1..maxLength) {
-            val day = Calendar.getInstance(Locale.ENGLISH)
-            day.timeInMillis = System.currentTimeMillis()
-            day.set(Calendar.DAY_OF_MONTH, i)
-
-            eventList.add(MyCalendarEvent(day, day,
-                DayItem.buildDayItemFromCal(day),
-                SampleEvent(name = "Awesome $i", description = "Event $i"))
-                .setEventInstanceDay(day))
+    private fun setupCalendar() {
+        val eventAdapter = SampleEventAgendaAdapter(applicationContext)
+        agenda_calendar_view.apply {
+            init(minDate, maxDate, eventAdapter, getSampleEvents())
+            setCallbacks(this@MainActivity)
         }
+    }
 
-        contentManager.initialiseCalendar(eventList)
-        agenda_calendar_view.agendaView.agendaListView.setOnItemClickListener { _: AdapterView<*>, view: View, position: Int, _: Long ->
-            Toast.makeText(view.context, "item: ".plus(position), Toast.LENGTH_SHORT).show()
+    private fun getSampleEvents(): MutableList<CalendarEvent> {
+        val monthDaysNumber = Calendar.getInstance().getMaximum(Calendar.DAY_OF_MONTH)
+        val events: MutableList<CalendarEvent> = ArrayList()
+        for (monthDayNumber in 1..monthDaysNumber) {
+            val calendarEvent = getCalendarEvent(monthDayNumber)
+            events.add(calendarEvent)
+        }
+        return events
+    }
+
+    private fun getCalendarEvent(monthDay: Int): MyCalendarEvent {
+        val day = Calendar.getInstance(locale)
+        day.timeInMillis = System.currentTimeMillis()
+        day.set(Calendar.DAY_OF_MONTH, monthDay)
+        val event = SampleEvent(name = "Awesome $monthDay", description = "Event $monthDay")
+        val dayItem = DayItem.buildDayItemFromCal(day, this, locale)
+        return MyCalendarEvent(day, day, dayItem, event).also {
+            it.setEventInstanceDay(day)
         }
     }
 
