@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.annotation.ColorRes
 import android.support.annotation.NonNull
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.SwipeRefreshLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -101,18 +100,6 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private fun addEventRenderer(@NonNull eventAdapter: EventAdapter<*>) {
         val agendaAdapter = agendaView.agendaListView.adapter as AgendaAdapter
         agendaAdapter.addEventRenderer(eventAdapter as EventAdapter<CalendarEvent>)
-    }
-
-    fun showProgress() {
-        (findViewById(R.id.refresh_layout) as SwipeRefreshLayout).isRefreshing = true
-    }
-
-    fun hideProgress() {
-        (findViewById(R.id.refresh_layout) as SwipeRefreshLayout).isRefreshing = false
-    }
-
-    fun isCalendarLoading(): Boolean {
-        return (findViewById(R.id.refresh_layout) as SwipeRefreshLayout).isRefreshing
     }
 
     private fun View.getColor(@ColorRes id: Int) = ContextCompat.getColor(context, id)
