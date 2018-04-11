@@ -2,7 +2,6 @@ package com.ognev.kotlin.agendacalendarview
 
 import android.content.Context
 import android.support.annotation.ColorRes
-import android.support.annotation.NonNull
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,7 +12,7 @@ import com.ognev.kotlin.agendacalendarview.agenda.AgendaView
 import com.ognev.kotlin.agendacalendarview.calendar.CalendarView
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.render.EventAdapter
+import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
 import com.ognev.kotlin.agendacalendarview.utils.FetchedEvent
@@ -26,9 +25,7 @@ import java.util.Calendar
 class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs),
     StickyListHeadersListView.OnStickyHeaderChangedListener {
 
-    lateinit var agendaView: AgendaView
-        private set
-
+    private lateinit var agendaView: AgendaView
     private lateinit var calendarView: CalendarView
     private var calendarController: CalendarController? = null
     private val viewAttributes: AgendaCalendarViewAttributes
@@ -78,28 +75,24 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         this.calendarController = calendarController
     }
 
-    fun init(minDate: Calendar, maxDate: Calendar, sampleAgendaAdapter: EventAdapter<CalendarEvent>, events: List<CalendarEvent>) {
+    fun init(minDate: Calendar, maxDate: Calendar, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
         CalendarManager.getInstance(context).apply {
             buildCal(minDate, maxDate)
-            loadInitialEvents(events)
-            loadCal(weeks, days, this.events)
+            fillCalendarEventsWithEmptyEvents(events)
         }
-        calendarView.init(CalendarManager.getInstance(context), viewAttributes)
 
         // Load agenda events and scroll to current day
         val agendaAdapter = AgendaAdapter()
         agendaView.agendaListView.adapter = agendaAdapter
         agendaView.agendaListView.setOnStickyHeaderChangedListener(this)
 
+        agendaAdapter.setEvents(CalendarManager.getInstance(context).events)
+        agendaAdapter.setEventAdapter(eventRenderer)
+
+        calendarView.init(CalendarManager.getInstance(context), viewAttributes)
+
         // notify that actually everything is loaded
         BusProvider.instance.send(FetchedEvent())
-        // add default event renderer
-        addEventRenderer(sampleAgendaAdapter)
-    }
-
-    private fun addEventRenderer(@NonNull eventAdapter: EventAdapter<*>) {
-        val agendaAdapter = agendaView.agendaListView.adapter as AgendaAdapter
-        agendaAdapter.addEventRenderer(eventAdapter as EventAdapter<CalendarEvent>)
     }
 
     private fun View.getColor(@ColorRes id: Int) = ContextCompat.getColor(context, id)

@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity(), CalendarController {
     }
 
     private fun setupCalendar() {
-        val eventAdapter = SampleEventAgendaAdapter(applicationContext)
+        val eventRenderer = SampleEventAgendaRenderer(applicationContext)
         agenda_calendar_view.apply {
-            init(minDate, maxDate, eventAdapter, getSampleEvents())
+            init(minDate, maxDate, eventRenderer, getSampleEvents())
             setCallbacks(this@MainActivity)
         }
     }

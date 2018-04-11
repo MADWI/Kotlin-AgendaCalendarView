@@ -1,23 +1,18 @@
 package com.ognev.kotlin.agendacalendarview.sample
 
-import com.ognev.kotlin.agendacalendarview.models.*
-import java.util.*
+import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.models.IDayItem
+import com.ognev.kotlin.agendacalendarview.models.IWeekItem
+import java.util.Calendar
 
 /**
  * Sample Calendar Event
  */
+class MyCalendarEvent(override var startTime: Calendar, override var endTime: Calendar,
+    override var dayReference: IDayItem, event: SampleEvent?) : CalendarEvent {
 
-class MyCalendarEvent : BaseCalendarEvent {
-
-    override lateinit var startTime: Calendar
-    override lateinit var endTime: Calendar
-    override var event: Any? = null
-
+    override var event: Any? = event
     override lateinit var instanceDay: Calendar
-
-
-    override lateinit var dayReference: IDayItem
-
     override lateinit var weekReference: IWeekItem
 
     override fun setEventInstanceDay(instanceDay: Calendar): MyCalendarEvent {
@@ -29,20 +24,6 @@ class MyCalendarEvent : BaseCalendarEvent {
         this.instanceDay.set(Calendar.AM_PM, 0)
         return this
     }
-
-    constructor()
-
-    constructor(startTime: Calendar,
-                endTime: Calendar,
-                dayItem: DayItem,
-                event: SampleEvent?) {
-        this.startTime = startTime
-        this.endTime = endTime
-        this.dayReference = dayItem
-        this.event = event
-    }
-
-    override fun copy(): MyCalendarEvent = MyCalendarEvent()
 
     override fun hasEvent() = event != null
 }

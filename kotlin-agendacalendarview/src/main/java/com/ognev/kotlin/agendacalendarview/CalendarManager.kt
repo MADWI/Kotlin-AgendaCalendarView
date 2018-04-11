@@ -3,6 +3,7 @@ package com.ognev.kotlin.agendacalendarview
 import android.content.Context
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
@@ -107,35 +108,36 @@ class CalendarManager(val context: Context) {
         }
     }
 
-    fun loadInitialEvents(eventList: List<CalendarEvent>) {
+    fun fillCalendarEventsWithEmptyEvents(events: List<CalendarEvent>) {
         for (weekItem in weeks) {
             for (dayItem in weekItem.dayItems) {
-                eventList
-                    .filter { DateHelper.isBetweenInclusive(dayItem.date, it.startTime, it.endTime) }
-                    .forEach { addEventToCalendarEvents(it, dayItem, weekItem) }
+                events.filter { DateHelper.isBetweenInclusive(dayItem.date, it.startTime, it.endTime) }
+                    .withEmpty { this.events.add(getEmptyCalendarEvent(dayItem, weekItem)) }
+                    .forEach { this.events.add(getCalendarEvent(it, dayItem, weekItem)) }
             }
         }
     }
 
-    private fun addEventToCalendarEvents(event: CalendarEvent, dayItem: IDayItem, weekItem: IWeekItem) {
-        val copy = event.copy()
+    private fun getEmptyCalendarEvent(dayItem: IDayItem, weekItem: IWeekItem) =
+        EmptyCalendarEvent().apply {
+            val dayInstance = Calendar.getInstance(locale)
+            dayInstance.time = dayItem.date
+            setEventInstanceDay(dayInstance)
+            dayReference = dayItem
+            weekReference = weekItem
+        }
+
+    private fun getCalendarEvent(event: CalendarEvent, dayItem: IDayItem, weekItem: IWeekItem): CalendarEvent {
         val dayInstance = Calendar.getInstance(locale)
         dayInstance.time = dayItem.date
-        copy.setEventInstanceDay(dayInstance)
-        copy.event = event.event
-        copy.dayReference = dayItem
-        copy.weekReference = weekItem
+        event.setEventInstanceDay(dayInstance)
+        event.dayReference = dayItem
+        event.weekReference = weekItem
         dayItem.setHasEvents(event.hasEvent())
         if (event.hasEvent()) {
             dayItem.eventsCount += 1
         }
-        events.add(copy)
-    }
-
-    fun loadCal(lWeeks: MutableList<IWeekItem>, lDays: MutableList<IDayItem>, lEvents: MutableList<CalendarEvent>) {
-        weeks = lWeeks
-        days = lDays
-        events = lEvents
+        return event
     }
 
     private fun getDayCells(startCal: Calendar): List<IDayItem> {
@@ -158,6 +160,13 @@ class CalendarManager(val context: Context) {
 
         days.addAll(dayItems)
         return dayItems
+    }
+
+    private inline fun <E : Any, T : Collection<E>> T.withEmpty(action: () -> Unit): T {
+        if (this.isEmpty()) {
+            action()
+        }
+        return this
     }
 
     companion object {
