@@ -18,26 +18,16 @@ import java.util.Locale
  * Holds reference to the days list of the calendar.
  * As the app is using several views, we want to keep everything in one place.
  */
-class CalendarManager(val context: Context) {
+class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
 
-    var locale: Locale = Locale.ENGLISH
-        set(locale) {
-            field = locale
-            today = Calendar.getInstance(this.locale)
-            weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), locale)
-            monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
-        }
-    var today = Calendar.getInstance(locale)
-    var weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), locale)
-        private set
-    var monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
-        private set
+    val today = Calendar.getInstance(locale)
+    val weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), locale)
+    private val monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
 
     /**
      * List of days used by the calendar
      */
-    var days: MutableList<IDayItem> = ArrayList()
-        private set
+    private var days: MutableList<IDayItem> = ArrayList()
     /**
      * List of weeks used by the calendar
      */
@@ -94,7 +84,7 @@ class CalendarManager(val context: Context) {
             // Build our week list
             val currentWeekOfYear = mWeekCounter.get(Calendar.WEEK_OF_YEAR)
 
-            val weekItem = WeekItem(currentWeekOfYear, currentYear, date, monthHalfNameFormat!!.format(date), currentMonth)
+            val weekItem = WeekItem(currentWeekOfYear, currentYear, date, monthHalfNameFormat.format(date), currentMonth)
             val dayItems = getDayCells(mWeekCounter) // gather days for the built week
             weekItem.dayItems = (dayItems)
             weeks.add(weekItem)
@@ -153,7 +143,7 @@ class CalendarManager(val context: Context) {
         cal.add(Calendar.DATE, offset)
 
         for (c in 0..6) {
-            val dayItem = DayItem.buildDayItemFromCal(cal, context, locale)
+            val dayItem = DayItem.buildDayItemFromCal(cal, monthHalfNameFormat)
             dayItems.add(dayItem)
             cal.add(Calendar.DATE, 1)
         }
@@ -170,9 +160,6 @@ class CalendarManager(val context: Context) {
     }
 
     companion object {
-
-        private val LOG_TAG = CalendarManager::class.java.simpleName
-
         var instance: CalendarManager? = null
             private set
 

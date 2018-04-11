@@ -7,12 +7,16 @@ import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class MainActivity : AppCompatActivity(), CalendarController {
 
     private val locale = Locale.ENGLISH
+    private val monthNameFormat: SimpleDateFormat by lazy {
+        SimpleDateFormat(getString(R.string.day_name_format), locale)
+    }
     private val maxDate: Calendar by lazy {
         Calendar.getInstance().apply {
             add(Calendar.YEAR, 1)
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity(), CalendarController {
         day.timeInMillis = System.currentTimeMillis()
         day.set(Calendar.DAY_OF_MONTH, monthDay)
         val event = SampleEvent(name = "Awesome $monthDay", description = "Event $monthDay")
-        val dayItem = DayItem.buildDayItemFromCal(day, this, locale)
+        val dayItem = DayItem.buildDayItemFromCal(day, monthNameFormat)
         return MyCalendarEvent(day, day, dayItem, event).also {
             it.setEventInstanceDay(day)
         }

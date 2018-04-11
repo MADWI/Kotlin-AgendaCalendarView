@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
@@ -24,7 +23,7 @@ class SampleEventAgendaRenderer(private var context: Context) : CalendarEventRen
 
     override fun setupHeaderItemView(headerItemView: View, day: Calendar) {
         val txtDayOfMonth = headerItemView.findViewById(R.id.view_agenda_day_of_month) as TextView
-        val today = CalendarManager.instance!!.today
+        val today = Calendar.getInstance()
 
         if (DateHelper.sameDate(day, today)) {
             txtDayOfMonth.setTextColor(ContextCompat.getColor(context, R.color.main_blue))
