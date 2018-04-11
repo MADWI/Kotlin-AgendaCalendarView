@@ -74,4 +74,9 @@ class MainActivity : AppCompatActivity(), CalendarController {
 
     override fun onScrollToDate(calendar: Calendar) {
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        agenda_calendar_view.dispose()
+    }
 }

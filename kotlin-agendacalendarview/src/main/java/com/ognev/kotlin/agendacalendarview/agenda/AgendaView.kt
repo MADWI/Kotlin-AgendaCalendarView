@@ -15,12 +15,14 @@ import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolledEvent
 import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
 import com.ognev.kotlin.agendacalendarview.utils.FetchedEvent
+import rx.Subscription
 
 class AgendaView : FrameLayout {
 
     lateinit var agendaListView: AgendaListView
         private set
     private lateinit var shadowView: View
+    private var subscription: Subscription? = null
     private val translationDuration =
         context.resources.getInteger(R.integer.agenda_view_translation_duration).toLong()
 
@@ -36,7 +38,7 @@ class AgendaView : FrameLayout {
         agendaListView = findViewById(R.id.agenda_listview)
         shadowView = findViewById(R.id.view_shadow)
 
-        BusProvider.instance.toObservable()
+        subscription = BusProvider.instance.toObservable()
             .subscribe { event ->
                 when (event) {
                     is DayClickedEvent -> agendaListView.scrollToCurrentDate(event.calendar)
@@ -103,5 +105,9 @@ class AgendaView : FrameLayout {
 
     private fun hideShadow() {
         shadowView.visibility = GONE
+    }
+
+    fun dispose() {
+        subscription?.unsubscribe()
     }
 }

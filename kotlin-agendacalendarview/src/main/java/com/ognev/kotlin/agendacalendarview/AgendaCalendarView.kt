@@ -16,6 +16,7 @@ import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
 import com.ognev.kotlin.agendacalendarview.utils.FetchedEvent
+import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 import java.util.Calendar
 
@@ -27,6 +28,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     private lateinit var agendaView: AgendaView
     private lateinit var calendarView: CalendarView
+    private var subscription: Subscription? = null
     private var calendarController: CalendarController? = null
     private val viewAttributes: AgendaCalendarViewAttributes
 
@@ -44,8 +46,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
             cellEventMarkColor = a.getColor(R.styleable.ColorOptionsView_cellEventMarkColor, getColor(R.color.azure)),
             cellEventPlusShowThreshold = a.getColor(R.styleable.ColorOptionsView_cellEventPlusShowThreshold, 4)
         )
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        inflater.inflate(R.layout.view_agendacalendar, this, true)
+        LayoutInflater.from(context).inflate(R.layout.view_agendacalendar, this, true)
     }
 
     override fun onFinishInflate() {
@@ -54,7 +55,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaView = findViewById(R.id.agenda_view)
         calendarView.findViewById<View>(R.id.cal_day_names).setBackgroundColor(viewAttributes.headerColor)
 
-        BusProvider.instance.toObservable()
+        subscription = BusProvider.instance.toObservable()
             .subscribe { event ->
                 if (event is DayClickedEvent) {
                     calendarController!!.onDaySelected(event.day)
@@ -96,4 +97,10 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     }
 
     private fun View.getColor(@ColorRes id: Int) = ContextCompat.getColor(context, id)
+
+    fun dispose() {
+        subscription?.unsubscribe()
+        calendarView.dispose()
+        agendaView.dispose()
+    }
 }

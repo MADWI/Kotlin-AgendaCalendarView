@@ -22,6 +22,7 @@ import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolledEvent
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
 import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
+import rx.Subscription
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -54,6 +55,7 @@ open class CalendarView : LinearLayout {
      * The current row displayed at top of the list
      */
     private var mCurrentListPosition: Int = 0
+    private var subscription: Subscription? = null
 
     constructor(context: Context) : super(context)
 
@@ -88,7 +90,7 @@ open class CalendarView : LinearLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        BusProvider.instance.toObservable()
+        subscription = BusProvider.instance.toObservable()
             .subscribe({ event ->
                 when (event) {
                     is CalendarScrolledEvent -> expandCalendarView()
@@ -231,6 +233,8 @@ open class CalendarView : LinearLayout {
 
         return mCurrentListPosition
     }
+
+    fun dispose() = subscription?.unsubscribe()
 
     companion object {
         private val LOG_TAG = CalendarView::class.java.simpleName
