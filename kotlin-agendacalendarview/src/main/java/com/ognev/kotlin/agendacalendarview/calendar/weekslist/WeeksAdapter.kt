@@ -18,7 +18,7 @@ import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DateHelper
-import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
+import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
@@ -88,7 +88,7 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
                 val txtMonth = cellItem.findViewById(R.id.view_day_month_label) as TextView
                 val circleView = cellItem.findViewById<View>(R.id.view_day_circle_selected)
                 val eventsDotsContainer = cellItem.findViewById(R.id.events_dots_container) as LinearLayout
-                cellItem.setOnClickListener { BusProvider.instance.send(DayClickedEvent(dayItem)) }
+                cellItem.setOnClickListener { BusProvider.instance.send(DayClicked(dayItem)) }
 
                 circleView.setBackgroundDrawable(viewAttributes.circleBackgroundColor)
                 txtMonth.visibility = View.GONE

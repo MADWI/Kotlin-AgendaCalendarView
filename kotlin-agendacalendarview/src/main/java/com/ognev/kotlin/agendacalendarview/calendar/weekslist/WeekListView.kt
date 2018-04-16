@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolledEvent
+import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
 
 class WeekListView : RecyclerView {
     private var mUserScrolling = false
@@ -63,7 +63,7 @@ class WeekListView : RecyclerView {
                 }
             // If scroll is caused by a touch (scroll touch, not any touch)
                 SCROLL_STATE_DRAGGING -> {
-                    BusProvider.instance.send(CalendarScrolledEvent())
+                    BusProvider.instance.send(CalendarScrolled())
                     // If scroll was initiated already, this is not a user scrolling, but probably a tap, else set userScrolling
                     if (!mScrolling) {
                         mUserScrolling = true

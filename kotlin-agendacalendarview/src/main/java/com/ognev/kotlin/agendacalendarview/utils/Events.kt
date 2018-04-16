@@ -9,13 +9,11 @@ import java.util.Calendar
  */
 sealed class Event
 
-class FetchedEvent : Event()
+class CalendarScrolled : Event()
 
-class CalendarScrolledEvent : Event()
+class AgendaListViewTouched : Event()
 
-class AgendaListViewTouchedEvent : Event()
-
-class DayClickedEvent(val day: IDayItem) : Event() {
+class DayClicked(val day: IDayItem) : Event() {
     var calendar: Calendar = Calendar.getInstance().also {
         it.time = day.date
     }

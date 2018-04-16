@@ -14,9 +14,7 @@ import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.DayClickedEvent
-import com.ognev.kotlin.agendacalendarview.utils.FetchedEvent
-import rx.Subscription
+import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 import java.util.Calendar
 
@@ -57,7 +55,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
         subscription = BusProvider.instance.toObservable()
             .subscribe { event ->
-                if (event is DayClickedEvent) {
+                if (event is DayClicked) {
                     calendarController!!.onDaySelected(event.day)
                 }
             }
@@ -91,9 +89,6 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaAdapter.setEventAdapter(eventRenderer)
 
         calendarView.init(CalendarManager.getInstance(context), viewAttributes)
-
-        // notify that actually everything is loaded
-        BusProvider.instance.send(FetchedEvent())
     }
 
     private fun View.getColor(@ColorRes id: Int) = ContextCompat.getColor(context, id)

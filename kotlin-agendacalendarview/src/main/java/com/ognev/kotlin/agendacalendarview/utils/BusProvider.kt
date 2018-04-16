@@ -5,7 +5,7 @@ import rx.subjects.SerializedSubject
 
 class BusProvider {
 
-    private val bus = SerializedSubject<Any, Any>(PublishSubject.create())
+    private val bus = SerializedSubject<Event, Event>(PublishSubject.create())
 
     fun send(event: Event) = bus.onNext(event)
 

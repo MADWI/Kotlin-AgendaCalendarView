@@ -56,10 +56,6 @@ class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
         this.events.addAll(events)
     }
 
-    fun updateEvents() {
-        notifyDataSetChanged()
-    }
-
     private fun getEventLayout(event: CalendarEvent) = eventRenderer.getEventLayout(event.hasEvent())
 
     private fun ViewGroup.inflate(@LayoutRes resource: Int): View =

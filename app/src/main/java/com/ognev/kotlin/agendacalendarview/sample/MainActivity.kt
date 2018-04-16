@@ -19,13 +19,11 @@ class MainActivity : AppCompatActivity(), CalendarController {
     }
     private val maxDate: Calendar by lazy {
         Calendar.getInstance().apply {
-            add(Calendar.YEAR, 1)
+            add(Calendar.MONTH, 3)
         }
     }
     private val minDate: Calendar by lazy {
         Calendar.getInstance().apply {
-            add(Calendar.MONTH, -10)
-            add(Calendar.YEAR, -1)
             set(Calendar.DAY_OF_MONTH, 1)
         }
     }
