@@ -10,7 +10,7 @@ interface CalendarEvent {
 
     var dayReference: DayItem
 
-    var weekReference: IWeekItem
+    var weekReference: WeekItem
 
     //TODO refactor
     fun hasEvent(): Boolean

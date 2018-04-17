@@ -4,10 +4,8 @@ import android.content.Context
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import org.joda.time.LocalDate
-import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
 import java.util.Locale
@@ -19,8 +17,6 @@ import java.util.Locale
  */
 class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
 
-    private val monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
-
     /**
      * List of days used by the calendar
      */
@@ -28,7 +24,7 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
     /**
      * List of weeks used by the calendar
      */
-    var weeks: MutableList<IWeekItem> = ArrayList()
+    var weeks: MutableList<WeekItem> = ArrayList()
         private set
     /**
      * List of events instances
@@ -75,12 +71,9 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
             && currentYear < maxYear + 1) { // But not > next yr.
 
             val date = mWeekCounter.time
-            // Build our week list
-            val currentWeekOfYear = mWeekCounter.get(Calendar.WEEK_OF_YEAR)
 
-            val weekItem = WeekItem(currentWeekOfYear, currentYear, date, monthHalfNameFormat.format(date), currentMonth)
             val dayItems = getDayCells(mWeekCounter) // gather days for the built week
-            weekItem.dayItems = (dayItems)
+            val weekItem = WeekItem(LocalDate.fromDateFields(date), dayItems)
             weeks.add(weekItem)
 
             //      Log.d(LOG_TAG, String.format("Adding week: %s", weekItem));
@@ -102,13 +95,13 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
         }
     }
 
-    private fun getEmptyCalendarEvent(dayItem: DayItem, weekItem: IWeekItem) =
+    private fun getEmptyCalendarEvent(dayItem: DayItem, weekItem: WeekItem) =
         EmptyCalendarEvent(LocalDate(dayItem.date)).apply {
             dayReference = dayItem
             weekReference = weekItem
         }
 
-    private fun getCalendarEvent(event: CalendarEvent, dayItem: DayItem, weekItem: IWeekItem): CalendarEvent {
+    private fun getCalendarEvent(event: CalendarEvent, dayItem: DayItem, weekItem: WeekItem): CalendarEvent {
         event.dayReference = dayItem
         event.weekReference = weekItem
         if (event.hasEvent()) {

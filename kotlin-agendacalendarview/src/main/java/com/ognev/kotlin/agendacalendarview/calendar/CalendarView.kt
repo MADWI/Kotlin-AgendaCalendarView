@@ -15,7 +15,7 @@ import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeeksAdapter
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
-import com.ognev.kotlin.agendacalendarview.models.IWeekItem
+import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
@@ -120,11 +120,9 @@ open class CalendarView : LinearLayout {
         listViewWeeks.post { scrollToPosition(updateSelectedDay(calendarEvent.dayReference)) }
     }
 
-    private fun scrollToCurrentWeek(weeks: List<IWeekItem>) {
+    private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
         val toady = LocalDate.now()
-        val weekIndex = weeks.indexOfFirst {
-            toady.isSameWeek(LocalDate.fromDateFields(it.date))
-        }
+        val weekIndex = weeks.indexOfFirst { toady.isSameWeek(it.date) }
         listViewWeeks.post { scrollToPosition(weekIndex) }
     }
 
@@ -145,7 +143,7 @@ open class CalendarView : LinearLayout {
     /**
      * Creates a new adapter if necessary and sets up its parameters.
      */
-    private fun setUpAdapter(weeks: List<IWeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+    private fun setUpAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
         if (mWeeksAdapter == null) {
             mWeeksAdapter = WeeksAdapter(context, viewAttributes)
             listViewWeeks.adapter = mWeeksAdapter
@@ -197,7 +195,7 @@ open class CalendarView : LinearLayout {
         var currentWeekIndex: Int? = null
         val weeks = CalendarManager.instance!!.weeks
         for (c in 0 until weeks.size) {
-            val week = LocalDate.fromDateFields(weeks[c].date)
+            val week = weeks[c].date
             if (dayItem.date.isSameWeek(week)) {
                 currentWeekIndex = c
                 break

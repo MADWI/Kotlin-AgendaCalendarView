@@ -15,19 +15,19 @@ import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.DayItem
-import com.ognev.kotlin.agendacalendarview.models.IWeekItem
+import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import net.danlew.android.joda.DateUtils
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
-import java.text.SimpleDateFormat
+import org.joda.time.format.DateTimeFormatter
 import java.util.ArrayList
 
 class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCalendarViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
-    val weeksList: List<IWeekItem>
+    val weeksList: List<WeekItem>
     var isDragging: Boolean = false
         set(dragging) {
             if (dragging != this.isDragging) {
@@ -36,12 +36,13 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
             }
         }
     var isAlphaSet: Boolean = false
+    private val monthDateFormat: DateTimeFormatter = DateTimeFormat.forPattern("MMM")
 
     init {
         weeksList = CalendarManager.instance!!.weeks
     }
 
-    fun updateWeeksItems(weekItems: List<IWeekItem>) {
+    fun updateWeeksItems(weekItems: List<WeekItem>) {
         //    this.mWeeksList.clear();
         //    this.mWeeksList.addAll(weekItems);
         notifyDataSetChanged()
@@ -78,7 +79,7 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
             setUpChildren(daysContainer)
         }
 
-        fun bindWeek(weekItem: IWeekItem) {
+        fun bindWeek(weekItem: WeekItem) {
             setUpMonthOverlay()
 
             val dayItems = weekItem.dayItems
@@ -137,10 +138,9 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
                 // Check if the month label has to be displayed
                 if (dayItem.date.dayOfMonth == 15) {
                     mTxtMonth.visibility = View.VISIBLE
-                    val monthDateFormat = SimpleDateFormat(mContext.getString(R.string.month_half_name_format), CalendarManager.instance!!.locale)
-                    var month = monthDateFormat.format(weekItem.date).toUpperCase()
-                    if (LocalDate.now().yearOfEra != weekItem.year) {
-                        month += String.format(" %d", weekItem.year)
+                    var month = monthDateFormat.print(weekItem.date).toUpperCase()
+                    if (LocalDate.now().yearOfEra != weekItem.date.year) {
+                        month += String.format(" %d", weekItem.date.year)
                     }
                     mTxtMonth.text = month
                 }
