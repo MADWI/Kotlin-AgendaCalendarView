@@ -1,8 +1,7 @@
 package com.ognev.kotlin.agendacalendarview
 
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
-
-import java.util.Calendar
+import org.joda.time.LocalDate
 
 interface CalendarController {
 
@@ -12,5 +11,5 @@ interface CalendarController {
 
     fun onDaySelected(dayItem: IDayItem)
 
-    fun onScrollToDate(calendar: Calendar)
+    fun onScrollToDate(date: LocalDate)
 }

@@ -7,16 +7,13 @@ import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import kotlinx.android.synthetic.main.activity_main.*
-import java.text.SimpleDateFormat
+import org.joda.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
 
 class MainActivity : AppCompatActivity(), CalendarController {
 
     private val locale = Locale.ENGLISH
-    private val monthNameFormat: SimpleDateFormat by lazy {
-        SimpleDateFormat(getString(R.string.day_name_format), locale)
-    }
     private val maxDate: Calendar by lazy {
         Calendar.getInstance().apply {
             add(Calendar.MONTH, 3)
@@ -43,11 +40,12 @@ class MainActivity : AppCompatActivity(), CalendarController {
     }
 
     private fun getSampleEvents(): MutableList<CalendarEvent> {
-        val monthDaysNumber = Calendar.getInstance().getMaximum(Calendar.DAY_OF_MONTH)
+        val monthDaysNumber = LocalDate.now().dayOfMonth().maximumValue
         val events: MutableList<CalendarEvent> = ArrayList()
         for (monthDayNumber in 1..monthDaysNumber) {
             val calendarEvent = getCalendarEvent(monthDayNumber)
             events.add(calendarEvent)
+            events.add(getCalendarEvent(monthDayNumber))
         }
         return events
     }
@@ -57,10 +55,9 @@ class MainActivity : AppCompatActivity(), CalendarController {
         day.timeInMillis = System.currentTimeMillis()
         day.set(Calendar.DAY_OF_MONTH, monthDay)
         val event = SampleEvent(name = "Awesome $monthDay", description = "Event $monthDay")
-        val dayItem = DayItem.buildDayItemFromCal(day, monthNameFormat)
-        return MyCalendarEvent(day, day, dayItem, event).also {
-            it.setEventInstanceDay(day)
-        }
+        val date = LocalDate().withDayOfMonth(monthDay)
+        val dayItem = DayItem(date)
+        return MyCalendarEvent(date, dayItem, event)
     }
 
     override fun getEmptyEventLayout() = R.layout.view_agenda_empty_event
@@ -70,7 +67,7 @@ class MainActivity : AppCompatActivity(), CalendarController {
     override fun onDaySelected(dayItem: IDayItem) {
     }
 
-    override fun onScrollToDate(calendar: Calendar) {
+    override fun onScrollToDate(date: LocalDate) {
     }
 
     override fun onDestroy() {

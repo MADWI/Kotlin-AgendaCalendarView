@@ -1,9 +1,9 @@
 package com.ognev.kotlin.agendacalendarview.sample
 
-import android.app.Application
+import com.ognev.kotlin.agendacalendarview.AgendaCalendarApp
 import com.squareup.leakcanary.LeakCanary
 
-class App : Application() {
+class App : AgendaCalendarApp() {
 
     override fun onCreate() {
         super.onCreate()

@@ -15,6 +15,8 @@ import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
+import com.ognev.kotlin.agendacalendarview.utils.Event
+import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 import java.util.Calendar
 
@@ -54,11 +56,13 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         calendarView.findViewById<View>(R.id.cal_day_names).setBackgroundColor(viewAttributes.headerColor)
 
         subscription = BusProvider.instance.toObservable()
-            .subscribe { event ->
-                if (event is DayClicked) {
-                    calendarController!!.onDaySelected(event.day)
-                }
-            }
+            .subscribe { handleEvent(it) }
+    }
+
+    private fun handleEvent(event: Event) {
+        if (event is DayClicked) {
+            calendarController?.onDaySelected(event.day)
+        }
     }
 
     override
@@ -66,7 +70,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         if (CalendarManager.instance!!.events.size > 0) {
             val event = CalendarManager.instance!!.events[position]
             calendarView.scrollToDate(event)
-            calendarController!!.onScrollToDate(event.instanceDay)
+            calendarController?.onScrollToDate(event.date)
         }
     }
 

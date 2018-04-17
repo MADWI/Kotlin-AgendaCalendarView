@@ -1,22 +1,17 @@
 package com.ognev.kotlin.agendacalendarview.models
 
-import java.util.Calendar
+import org.joda.time.LocalDate
 
 interface CalendarEvent {
 
     var event: Any?
 
-    var startTime: Calendar
-
-    var endTime: Calendar
-
-    val instanceDay: Calendar
+    val date: LocalDate
 
     var dayReference: IDayItem
 
     var weekReference: IWeekItem
 
+    //TODO refactor
     fun hasEvent(): Boolean
-
-    fun setEventInstanceDay(instanceDay: Calendar) : CalendarEvent
 }

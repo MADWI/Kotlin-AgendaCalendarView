@@ -19,12 +19,10 @@ import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
-import com.ognev.kotlin.agendacalendarview.utils.DateHelper
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
 import rx.Subscription
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 /**
  * The calendar view is a freely scrolling view that allows the user to browse between days of the
@@ -58,7 +56,7 @@ open class CalendarView : LinearLayout {
      */
     private var mCurrentListPosition: Int = 0
     private var subscription: Subscription? = null
-
+    private val dayNameFormatter = DateTimeFormat.forPattern("EEE")
     private val expandedCalendarHeight: Int by lazy {
         val headerHeight = resources.getDimension(R.dimen.calendar_header_height)
         val rowsHeight = resources.getDimension(R.dimen.day_cell_height) * 5
@@ -100,20 +98,17 @@ open class CalendarView : LinearLayout {
                 when (event) {
                     is CalendarScrolled -> expandCalendarView()
                     is AgendaListViewTouched -> collapseCalendarView()
-                    is DayClicked -> updateSelectedDay(event.calendar, event.day)
+                    is DayClicked -> updateSelectedDay(event.day)
                 }
             }
     }
 
     fun init(calendarManager: CalendarManager, agendaCalendarViewAttributes: AgendaCalendarViewAttributes) {
-        val today = calendarManager.today
-        val locale = calendarManager.locale
-        val weekDayFormatter = calendarManager.weekdayFormatter
         val weeks = calendarManager.weeks
 
-        setUpHeader(today, weekDayFormatter, locale)
-        setUpAdapter(today, weeks, agendaCalendarViewAttributes)
-        scrollToDate(today, weeks)
+        setupDayNamesHeader()
+        setUpAdapter(weeks, agendaCalendarViewAttributes)
+        scrollToCurrentWeek(weeks)
     }
 
     /**
@@ -122,23 +117,15 @@ open class CalendarView : LinearLayout {
      * @param calendarEvent The event for the selected position in the agenda listview.
      */
     fun scrollToDate(calendarEvent: CalendarEvent) {
-        listViewWeeks.post { scrollToPosition(updateSelectedDay(calendarEvent.instanceDay, calendarEvent.dayReference)) }
+        listViewWeeks.post { scrollToPosition(updateSelectedDay(calendarEvent.dayReference)) }
     }
 
-    private fun scrollToDate(today: Calendar, weeks: List<IWeekItem>) {
-        var currentWeekIndex: Int? = null
-
-        for (c in 0 until weeks.size) {
-            if (DateHelper.sameWeek(today, weeks[c])) {
-                currentWeekIndex = c
-                break
-            }
+    private fun scrollToCurrentWeek(weeks: List<IWeekItem>) {
+        val toady = LocalDate.now()
+        val weekIndex = weeks.indexOfFirst {
+            toady.isSameWeek(LocalDate.fromDateFields(it.date))
         }
-
-        if (currentWeekIndex != null) {
-            val finalCurrentWeekIndex = currentWeekIndex
-            listViewWeeks.post { scrollToPosition(finalCurrentWeekIndex.toInt()) }
-        }
+        listViewWeeks.post { scrollToPosition(weekIndex) }
     }
 
     override fun setBackgroundColor(color: Int) {
@@ -158,28 +145,20 @@ open class CalendarView : LinearLayout {
     /**
      * Creates a new adapter if necessary and sets up its parameters.
      */
-    private fun setUpAdapter(today: Calendar, weeks: List<IWeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+    private fun setUpAdapter(weeks: List<IWeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
         if (mWeeksAdapter == null) {
-            mWeeksAdapter = WeeksAdapter(context, today, viewAttributes)
+            mWeeksAdapter = WeeksAdapter(context, viewAttributes)
             listViewWeeks.adapter = mWeeksAdapter
         }
         mWeeksAdapter!!.updateWeeksItems(weeks)
     }
 
-    private fun setUpHeader(today: Calendar, weekDayFormatter: SimpleDateFormat, locale: Locale) {
-        val daysPerWeek = 7
-        val dayLabels = arrayOfNulls<String>(daysPerWeek)
-        val cal = Calendar.getInstance(CalendarManager.getInstance(context).locale)
-        cal.time = today.time
-        val firstDayOfWeek = cal.firstDayOfWeek
-        for (count in 0..6) {
-            cal.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + count)
-            dayLabels[count] = weekDayFormatter.format(cal.time).toUpperCase(locale)
-        }
-
+    private fun setupDayNamesHeader() {
+        val today = LocalDate.now()
         for (i in 0 until dayNamesHeader.childCount) {
-            val txtDay = dayNamesHeader.getChildAt(i) as TextView
-            txtDay.text = dayLabels[i]
+            val dayTextView = dayNamesHeader.getChildAt(i) as TextView
+            val day = today.withDayOfWeek(i + 1)
+            dayTextView.text = dayNameFormatter.print(day).toUpperCase()
         }
     }
 
@@ -202,16 +181,12 @@ open class CalendarView : LinearLayout {
 
     /**
      * Update a selected cell day item.
-
-     * @param calendar The Calendar instance of the day selected.
-     * *
+     *
      * @param dayItem  The DayItem information held by the cell item.
      * *
      * @return The selected row of the weeks list, to be updated.
      */
-    private fun updateSelectedDay(calendar: Calendar, dayItem: IDayItem): Int {
-        var currentWeekIndex: Int? = null
-
+    private fun updateSelectedDay(dayItem: IDayItem): Int {
         // update highlighted/selected day
         if (dayItem != selectedDay) {
             dayItem.isSelected = true
@@ -219,8 +194,11 @@ open class CalendarView : LinearLayout {
             selectedDay = dayItem
         }
 
-        for (c in 0 until CalendarManager.instance!!.weeks.size) {
-            if (DateHelper.sameWeek(calendar, CalendarManager.instance!!.weeks[c])) {
+        var currentWeekIndex: Int? = null
+        val weeks = CalendarManager.instance!!.weeks
+        for (c in 0 until weeks.size) {
+            val week = LocalDate.fromDateFields(weeks[c].date)
+            if (dayItem.date.isSameWeek(week)) {
                 currentWeekIndex = c
                 break
             }
@@ -228,19 +206,19 @@ open class CalendarView : LinearLayout {
 
         if (currentWeekIndex != null) {
             // highlighted day has changed, update the rows concerned
-            if (!currentWeekIndex.equals(mCurrentListPosition)) {
+            if (currentWeekIndex != mCurrentListPosition) {
                 updateItemAtPosition(mCurrentListPosition)
             }
-            mCurrentListPosition = currentWeekIndex.toInt()
-            updateItemAtPosition(currentWeekIndex.toInt())
+            mCurrentListPosition = currentWeekIndex
+            updateItemAtPosition(currentWeekIndex)
         }
-
-        //TODO remove currentSelectedDay
-        CalendarManager.instance!!.currentSelectedDay = calendar
-        CalendarManager.instance!!.currentListPosition = mCurrentListPosition
 
         return mCurrentListPosition
     }
 
     fun dispose() = subscription?.unsubscribe()
+
+    private fun LocalDate.isSameWeek(date: LocalDate): Boolean {
+        return this.weekOfWeekyear == date.weekOfWeekyear
+    }
 }

@@ -5,38 +5,30 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.FrameLayout
+import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import com.ognev.kotlin.agendacalendarview.utils.Event
+import org.joda.time.LocalDate
 import rx.Subscription
 
-class AgendaView : FrameLayout {
+class AgendaView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     lateinit var agendaListView: AgendaListView
         private set
     private var subscription: Subscription? = null
 
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        inflater.inflate(R.layout.view_agenda, this, true)
+    init {
+        LayoutInflater.from(context).inflate(R.layout.view_agenda, this, true)
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         agendaListView = findViewById(R.id.agenda_listview)
-
         subscription = BusProvider.instance.toObservable()
             .subscribe { event -> handleEvent(event) }
-    }
-
-    private fun handleEvent(event: Event) {
-        when (event) {
-            is DayClicked -> agendaListView.scrollToCurrentDate(event.calendar)
-        }
     }
 
     override
@@ -49,5 +41,17 @@ class AgendaView : FrameLayout {
 
     fun dispose() {
         subscription?.unsubscribe()
+    }
+
+    private fun handleEvent(event: Event) {
+        when (event) {
+            is DayClicked -> scrollToDate(event.day.date)
+        }
+    }
+
+    private fun scrollToDate(date: LocalDate) {
+        val events = CalendarManager.instance!!.events
+        val selection = events.indexOfFirst { date.compareTo(it.date) == 0 }
+        post { agendaListView.setSelection(selection) }
     }
 }

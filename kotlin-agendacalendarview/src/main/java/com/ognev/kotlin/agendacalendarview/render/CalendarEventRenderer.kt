@@ -3,13 +3,13 @@ package com.ognev.kotlin.agendacalendarview.render
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import java.util.Calendar
+import org.joda.time.LocalDate
 
 interface CalendarEventRenderer<in T : CalendarEvent> {
 
     fun setupEventItemView(eventItemView: View, event: T, position: Int)
 
-    fun setupHeaderItemView(headerItemView: View, day: Calendar)
+    fun setupHeaderItemView(headerItemView: View, day: LocalDate)
 
     @LayoutRes
     fun getEventLayout(isEmptyEvent: Boolean): Int

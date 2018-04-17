@@ -17,16 +17,15 @@ import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.DateHelper
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
+import net.danlew.android.joda.DateUtils
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
 import java.text.SimpleDateFormat
 import java.util.ArrayList
-import java.util.Calendar
 
-class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
-    val viewAttributes: AgendaCalendarViewAttributes) : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
-
-    override fun getItemCount() = weeksList.size
+class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCalendarViewAttributes)
+    : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
     val weeksList: List<IWeekItem>
     var isDragging: Boolean = false
@@ -48,6 +47,8 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
         notifyDataSetChanged()
     }
 
+    override fun getItemCount() = weeksList.size
+
     override
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_week, parent, false)
@@ -57,7 +58,7 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
     override
     fun onBindViewHolder(weekViewHolder: WeekViewHolder, position: Int) {
         val weekItem = weeksList[position]
-        weekViewHolder.bindWeek(weekItem, mToday)
+        weekViewHolder.bindWeek(weekItem)
     }
 
     inner class WeekViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -68,6 +69,7 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
         private var mCells: List<LinearLayout>? = null
         private val mTxtMonth: TextView
         private val mMonthBackground: FrameLayout
+        private val monthFormatter = DateTimeFormat.forPattern("MMM")
 
         init {
             mTxtMonth = itemView.findViewById(R.id.month_label) as TextView
@@ -76,7 +78,7 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
             setUpChildren(daysContainer)
         }
 
-        fun bindWeek(weekItem: IWeekItem, today: Calendar) {
+        fun bindWeek(weekItem: IWeekItem) {
             setUpMonthOverlay()
 
             val dayItems = weekItem.dayItems
@@ -100,18 +102,19 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
                 txtMonth.setTypeface(null, Typeface.NORMAL)
 
                 // Display the day
-                txtDay.text = dayItem.value.toString()
+                txtDay.text = dayItem.date.dayOfMonth.toString()
 
                 // Highlight first day of the month
-                if (dayItem.isFirstDayOfTheMonth && !dayItem.isSelected) {
+                val isFirstDayOfMonth = dayItem.date.dayOfMonth == 1
+                if (isFirstDayOfMonth && !dayItem.isSelected) {
                     txtMonth.visibility = View.VISIBLE
-                    txtMonth.text = dayItem.month
+                    txtMonth.text = monthFormatter.print(dayItem.date)
                     txtDay.setTypeface(null, Typeface.BOLD)
                     txtMonth.setTypeface(null, Typeface.BOLD)
                 }
 
                 // Check if this day is in the past
-                if (today.time.after(dayItem.date) && !DateHelper.sameDate(today, dayItem.date)) {
+                if (dayItem.date.isAfter(LocalDate.now()) && !DateUtils.isToday(dayItem.date)) {
                     txtDay.setTextColor(viewAttributes.pastDayTextColor)
                     txtMonth.setTextColor(viewAttributes.monthTextColor)
                     cellItem.setBackgroundColor(viewAttributes.cellPastBackgroundColor)
@@ -120,7 +123,7 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
                 }
 
                 // Highlight the cell if this day is today
-                if (dayItem.isToday && !dayItem.isSelected) {
+                if (DateUtils.isToday(dayItem.date) && !dayItem.isSelected) {
                     txtDay.setTextColor(viewAttributes.currentDayTextColor)
                 }
 
@@ -131,13 +134,12 @@ class WeeksAdapter(private val mContext: Context, private val mToday: Calendar,
                 }
 
                 addEventsMarks(eventsDotsContainer, dayItem)
-
                 // Check if the month label has to be displayed
-                if (dayItem.value == 15) {
+                if (dayItem.date.dayOfMonth == 15) {
                     mTxtMonth.visibility = View.VISIBLE
                     val monthDateFormat = SimpleDateFormat(mContext.getString(R.string.month_half_name_format), CalendarManager.instance!!.locale)
                     var month = monthDateFormat.format(weekItem.date).toUpperCase()
-                    if (today.get(Calendar.YEAR) != weekItem.year) {
+                    if (LocalDate.now().yearOfEra != weekItem.year) {
                         month += String.format(" %d", weekItem.year)
                     }
                     mTxtMonth.text = month

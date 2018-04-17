@@ -7,7 +7,7 @@ import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
-import com.ognev.kotlin.agendacalendarview.utils.DateHelper
+import org.joda.time.LocalDate
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
@@ -20,8 +20,6 @@ import java.util.Locale
  */
 class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
 
-    val today = Calendar.getInstance(locale)
-    val weekdayFormatter = SimpleDateFormat(context.getString(R.string.day_name_format), locale)
     private val monthHalfNameFormat = SimpleDateFormat(context.getString(R.string.month_half_name_format), locale)
 
     /**
@@ -38,9 +36,6 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
      */
     var events: MutableList<CalendarEvent> = ArrayList()
         private set
-
-    lateinit var currentSelectedDay: Calendar
-    var currentListPosition: Int = 0
 
     fun buildCal(minDate: Calendar?, maxDate: Calendar?) {
         if (minDate == null || maxDate == null) {
@@ -101,7 +96,7 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
     fun fillCalendarEventsWithEmptyEvents(events: List<CalendarEvent>) {
         for (weekItem in weeks) {
             for (dayItem in weekItem.dayItems) {
-                events.filter { DateHelper.isBetweenInclusive(dayItem.date, it.startTime, it.endTime) }
+                events.filter { dayItem.date.compareTo(it.date) == 0 }
                     .withEmpty { this.events.add(getEmptyCalendarEvent(dayItem, weekItem)) }
                     .forEach { this.events.add(getCalendarEvent(it, dayItem, weekItem)) }
             }
@@ -109,21 +104,14 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
     }
 
     private fun getEmptyCalendarEvent(dayItem: IDayItem, weekItem: IWeekItem) =
-        EmptyCalendarEvent().apply {
-            val dayInstance = Calendar.getInstance(locale)
-            dayInstance.time = dayItem.date
-            setEventInstanceDay(dayInstance)
+        EmptyCalendarEvent(LocalDate(dayItem.date)).apply {
             dayReference = dayItem
             weekReference = weekItem
         }
 
     private fun getCalendarEvent(event: CalendarEvent, dayItem: IDayItem, weekItem: IWeekItem): CalendarEvent {
-        val dayInstance = Calendar.getInstance(locale)
-        dayInstance.time = dayItem.date
-        event.setEventInstanceDay(dayInstance)
         event.dayReference = dayItem
         event.weekReference = weekItem
-        dayItem.setHasEvents(event.hasEvent())
         if (event.hasEvent()) {
             dayItem.eventsCount += 1
         }
@@ -143,7 +131,7 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
         cal.add(Calendar.DATE, offset)
 
         for (c in 0..6) {
-            val dayItem = DayItem.buildDayItemFromCal(cal, monthHalfNameFormat)
+            val dayItem = DayItem(LocalDate.fromCalendarFields(cal))
             dayItems.add(dayItem)
             cal.add(Calendar.DATE, 1)
         }

@@ -1,26 +1,12 @@
 package com.ognev.kotlin.agendacalendarview.models
 
-import java.util.Date
+import org.joda.time.LocalDate
 
 interface IDayItem {
 
-    var date: Date
-
-    var value: Int
-
-    var isToday: Boolean
+    var date: LocalDate
 
     var isSelected: Boolean
 
-    var isFirstDayOfTheMonth: Boolean
-
-    var month: String
-
     var eventsCount: Int
-
-    override fun toString(): String
-
-    fun setHasEvents(hasEvents: Boolean)
-
-    fun hasEvents(): Boolean
 }
