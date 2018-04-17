@@ -14,7 +14,7 @@ import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
+import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
@@ -181,7 +181,7 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
                 }
         }
 
-        private fun addEventsMarks(eventsMarksContainer: LinearLayout, dayItem: IDayItem) {
+        private fun addEventsMarks(eventsMarksContainer: LinearLayout, dayItem: DayItem) {
             if (eventsMarksContainer.childCount == dayItem.eventsCount) {
                 return
             }

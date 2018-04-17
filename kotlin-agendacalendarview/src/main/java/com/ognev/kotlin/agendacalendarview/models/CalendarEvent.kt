@@ -8,7 +8,7 @@ interface CalendarEvent {
 
     val date: LocalDate
 
-    var dayReference: IDayItem
+    var dayReference: DayItem
 
     var weekReference: IWeekItem
 

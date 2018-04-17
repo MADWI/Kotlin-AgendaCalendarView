@@ -19,7 +19,7 @@ class WeekItem
         override var label: String,
         override var month: Int) : IWeekItem {
     private var hasEvents: Boolean = false
-    override lateinit var dayItems: List<IDayItem>
+    override lateinit var dayItems: List<DayItem>
 
     override fun hasEvents(): Boolean {
         return hasEvents

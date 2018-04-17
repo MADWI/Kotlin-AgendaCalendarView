@@ -19,5 +19,5 @@ interface IWeekItem {
 
     fun setHasEvents(hasEvents: Boolean)
 
-    var dayItems: List<IDayItem>
+    var dayItems: List<DayItem>
 }

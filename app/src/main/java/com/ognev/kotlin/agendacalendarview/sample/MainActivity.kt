@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import com.ognev.kotlin.agendacalendarview.CalendarController
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import kotlinx.android.synthetic.main.activity_main.*
 import org.joda.time.LocalDate
 import java.util.Calendar
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity(), CalendarController {
 
     override fun getEventLayout() = R.layout.view_agenda_event
 
-    override fun onDaySelected(dayItem: IDayItem) {
+    override fun onDaySelected(dayItem: DayItem) {
     }
 
     override fun onScrollToDate(date: LocalDate) {

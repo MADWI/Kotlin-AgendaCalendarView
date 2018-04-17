@@ -4,7 +4,7 @@ import org.joda.time.LocalDate
 
 open class EmptyCalendarEvent(override val date: LocalDate) : CalendarEvent {
 
-    override lateinit var dayReference: IDayItem
+    override lateinit var dayReference: DayItem
     override lateinit var weekReference: IWeekItem
     override var event: Any? = null
     override fun hasEvent() = false

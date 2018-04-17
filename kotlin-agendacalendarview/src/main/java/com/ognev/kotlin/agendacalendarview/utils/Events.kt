@@ -1,6 +1,6 @@
 package com.ognev.kotlin.agendacalendarview.utils
 
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
+import com.ognev.kotlin.agendacalendarview.models.DayItem
 
 /**
  * Events emitted by the bus provider.
@@ -11,4 +11,4 @@ class CalendarScrolled : Event()
 
 class AgendaListViewTouched : Event()
 
-class DayClicked(val day: IDayItem) : Event()
+class DayClicked(val day: DayItem) : Event()

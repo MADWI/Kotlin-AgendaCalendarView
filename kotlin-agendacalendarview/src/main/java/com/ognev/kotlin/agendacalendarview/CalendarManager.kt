@@ -4,7 +4,6 @@ import android.content.Context
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import org.joda.time.LocalDate
@@ -25,7 +24,7 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
     /**
      * List of days used by the calendar
      */
-    private var days: MutableList<IDayItem> = ArrayList()
+    private var days: MutableList<DayItem> = ArrayList()
     /**
      * List of weeks used by the calendar
      */
@@ -103,13 +102,13 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
         }
     }
 
-    private fun getEmptyCalendarEvent(dayItem: IDayItem, weekItem: IWeekItem) =
+    private fun getEmptyCalendarEvent(dayItem: DayItem, weekItem: IWeekItem) =
         EmptyCalendarEvent(LocalDate(dayItem.date)).apply {
             dayReference = dayItem
             weekReference = weekItem
         }
 
-    private fun getCalendarEvent(event: CalendarEvent, dayItem: IDayItem, weekItem: IWeekItem): CalendarEvent {
+    private fun getCalendarEvent(event: CalendarEvent, dayItem: DayItem, weekItem: IWeekItem): CalendarEvent {
         event.dayReference = dayItem
         event.weekReference = weekItem
         if (event.hasEvent()) {
@@ -118,10 +117,10 @@ class CalendarManager(context: Context, var locale: Locale = Locale.ENGLISH) {
         return event
     }
 
-    private fun getDayCells(startCal: Calendar): List<IDayItem> {
+    private fun getDayCells(startCal: Calendar): List<DayItem> {
         val cal = Calendar.getInstance(locale)
         cal.time = startCal.time
-        val dayItems = ArrayList<IDayItem>()
+        val dayItems = ArrayList<DayItem>()
 
         val firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK)
         var offset = cal.firstDayOfWeek - firstDayOfWeek

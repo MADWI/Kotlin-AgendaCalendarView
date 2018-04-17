@@ -14,7 +14,7 @@ import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeekListView
 import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeeksAdapter
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.IDayItem
+import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.IWeekItem
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
@@ -33,7 +33,7 @@ open class CalendarView : LinearLayout {
     /**
      * The current highlighted day in blue
      */
-    var selectedDay: IDayItem? = null
+    var selectedDay: DayItem? = null
 
     /**
      * Part of the calendar view layout always visible, the weeks list
@@ -186,7 +186,7 @@ open class CalendarView : LinearLayout {
      * *
      * @return The selected row of the weeks list, to be updated.
      */
-    private fun updateSelectedDay(dayItem: IDayItem): Int {
+    private fun updateSelectedDay(dayItem: DayItem): Int {
         // update highlighted/selected day
         if (dayItem != selectedDay) {
             dayItem.isSelected = true
