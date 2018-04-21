@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview
+package com.ognev.kotlin.agendacalendarview.utils
 
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem

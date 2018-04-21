@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.FrameLayout
-import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.R
+import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
@@ -19,6 +19,7 @@ class AgendaView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
     lateinit var agendaListView: AgendaListView
         private set
     private var subscription: Subscription? = null
+    lateinit var events: List<CalendarEvent>
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_agenda, this, true)
@@ -50,7 +51,6 @@ class AgendaView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
     }
 
     private fun scrollToDate(date: LocalDate) {
-        val events = CalendarManager.instance.events
         val selection = events.indexOfFirst { date.compareTo(it.date) == 0 }
         post { agendaListView.setSelection(selection) }
     }
