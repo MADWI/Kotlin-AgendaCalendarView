@@ -89,11 +89,10 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         val weeks = weeksProvider.getWeeksBetweenDates(startDate, endDate)
         this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
 
-        // Load agenda events and scroll to current day
         val agendaAdapter = AgendaAdapter()
         agendaView.events = agendaEvents
-        agendaView.agendaListView.adapter = agendaAdapter
-        agendaView.agendaListView.setOnStickyHeaderChangedListener(this)
+        agendaView.adapter = agendaAdapter
+        agendaView.setOnStickyHeaderChangedListener(this)
 
         agendaAdapter.setEvents(agendaEvents)
         agendaAdapter.setEventAdapter(eventRenderer)

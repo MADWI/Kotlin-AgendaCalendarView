@@ -12,6 +12,12 @@
     <com.ognev.kotlin.agendacalendarview.agenda.AgendaView
         android:id="@+id/agenda_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:animationCache="false"
+        android:divider="@color/calendar_divider_color"
+        android:dividerHeight="1dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:scrollingCache="false" />
 
 </LinearLayout>
