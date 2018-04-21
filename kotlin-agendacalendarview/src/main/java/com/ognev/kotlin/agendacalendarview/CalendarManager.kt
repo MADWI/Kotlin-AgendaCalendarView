@@ -21,24 +21,22 @@ class CalendarManager {
         private set
 
     fun fillCalendarEventsWithEmptyEvents(events: List<CalendarEvent>, weeks: List<WeekItem>) {
-        for (weekItem in weeks) {
-            for (dayItem in weekItem.dayItems) {
+        for (week in weeks) {
+            for (dayItem in week.dayItems) {
                 events.filter { dayItem.date.compareTo(it.date) == 0 }
-                    .withEmpty { this.events.add(getEmptyCalendarEvent(dayItem, weekItem)) }
-                    .forEach { this.events.add(getCalendarEvent(it, dayItem, weekItem)) }
+                    .withEmpty { this.events.add(getEmptyCalendarEvent(dayItem)) }
+                    .forEach { this.events.add(getCalendarEvent(it, dayItem)) }
             }
         }
     }
 
-    private fun getEmptyCalendarEvent(dayItem: DayItem, weekItem: WeekItem) =
+    private fun getEmptyCalendarEvent(dayItem: DayItem) =
         EmptyCalendarEvent(LocalDate(dayItem.date)).apply {
             dayReference = dayItem
-            weekReference = weekItem
         }
 
-    private fun getCalendarEvent(event: CalendarEvent, dayItem: DayItem, weekItem: WeekItem): CalendarEvent {
+    private fun getCalendarEvent(event: CalendarEvent, dayItem: DayItem): CalendarEvent {
         event.dayReference = dayItem
-        event.weekReference = weekItem
         if (event.hasEvent()) {
             dayItem.eventsCount += 1
         }
