@@ -2,15 +2,17 @@ package com.ognev.kotlin.agendacalendarview.utils
 
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
-import org.joda.time.Days
 import org.joda.time.LocalDate
+import org.joda.time.Weeks
 
 class WeeksProvider {
 
-    fun getWeeksBetweenDates(startDate: LocalDate, endDate: LocalDate): MutableList<WeekItem> {
+    fun getWeeksBetweenDates(minDate: LocalDate, maxDate: LocalDate): MutableList<WeekItem> {
+        val startDate = minDate.withDayOfWeek(1)
+        val endDate = maxDate.withDayOfWeek(7)
         val weeks = mutableListOf<WeekItem>()
-        val daysBetween = Days.daysBetween(startDate, endDate).days
-        for (i in 0..daysBetween) {
+        val weeksBetween = Weeks.weeksBetween(startDate, endDate).weeks
+        for (i in 0..weeksBetween) {
             val weekFirstDate = startDate.plusWeeks(i)
             val dayItems = getDayItems(weekFirstDate)
             val weekItem = WeekItem(weekFirstDate, dayItems)

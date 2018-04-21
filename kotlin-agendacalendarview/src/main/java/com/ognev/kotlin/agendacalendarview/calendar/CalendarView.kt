@@ -2,7 +2,6 @@ package com.ognev.kotlin.agendacalendarview.calendar
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,42 +28,27 @@ import rx.Subscription
  */
 class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
-    /**
-     * The current highlighted day in blue
-     */
-    var selectedDay: DayItem? = null
-
-    /**
-     * Part of the calendar view layout always visible, the weeks list
-     */
-    lateinit var listViewWeeks: WeekListView
-        private set
-
-    private lateinit var weeksAdapter: WeeksAdapter
-    private lateinit var dayNamesHeader: LinearLayout
-    private lateinit var weeks: List<WeekItem>
-
-    /**
-     * The current row displayed at top of the list
-     */
-    private var mCurrentListPosition: Int = 0
-    private var subscription: Subscription? = null
+    private var selectedDay: DayItem? = null
     private val dayNameFormatter = DateTimeFormat.forPattern("EEE")
     private val expandedCalendarHeight: Int by lazy {
         val headerHeight = resources.getDimension(R.dimen.calendar_header_height)
         val rowsHeight = resources.getDimension(R.dimen.day_cell_height) * 5
         (headerHeight + rowsHeight).toInt()
     }
-
     private val collapsedCalendarHeight: Int by lazy {
         val headerHeight = resources.getDimension(R.dimen.calendar_header_height)
         val rowsHeight = resources.getDimension(R.dimen.day_cell_height) * 2
         (headerHeight + rowsHeight).toInt()
     }
-
     private val heightAnimationDuration: Long by lazy {
         resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
     }
+    private lateinit var weekListView: WeekListView
+    private lateinit var weeksAdapter: WeeksAdapter
+    private lateinit var dayNamesHeader: LinearLayout
+    private lateinit var weeks: List<WeekItem>
+    private var currentWeekIndex = 0
+    private var subscription: Subscription? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_calendar, this, true)
@@ -74,7 +58,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
     override fun onFinishInflate() {
         super.onFinishInflate()
         dayNamesHeader = findViewById(R.id.cal_day_names)
-        listViewWeeks = findViewById(R.id.list_week)
+        weekListView = findViewById(R.id.list_week)
         subscribeOnEvents()
     }
 
@@ -96,38 +80,24 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         scrollToCurrentWeek(weeks)
     }
 
-    /**
-     * Fired when the Agenda list view changes section.
-
-     * @param calendarEvent The event for the selected position in the agenda listview.
-     */
     fun scrollToDate(calendarEvent: CalendarEvent) {
-        listViewWeeks.post { scrollToPosition(updateSelectedDay(calendarEvent.dayReference)) }
+        updateSelectedDay(calendarEvent.dayReference)
+        weekListView.scrollToPosition(currentWeekIndex)
     }
 
     private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
         val today = LocalDate.now()
         val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.firstDay) }
-        listViewWeeks.post { scrollToPosition(weekIndex) }
+        weekListView.scrollToPosition(weekIndex)
     }
 
     override fun setBackgroundColor(color: Int) {
-        listViewWeeks.setBackgroundColor(color)
-    }
-
-    private fun scrollToPosition(targetPosition: Int) {
-        val layoutManager = listViewWeeks.layoutManager as LinearLayoutManager
-        layoutManager.scrollToPosition(targetPosition)
-    }
-
-    private fun updateItemAtPosition(position: Int) {
-        val weeksAdapter = listViewWeeks.adapter as WeeksAdapter
-        weeksAdapter.notifyItemChanged(position)
+        weekListView.setBackgroundColor(color)
     }
 
     private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
         weeksAdapter = WeeksAdapter(context, viewAttributes)
-        listViewWeeks.adapter = weeksAdapter
+        weekListView.adapter = weeksAdapter
         weeksAdapter.updateWeeksItems(weeks)
     }
 
@@ -157,40 +127,24 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         setLayoutParams(layoutParams)
     }
 
-    /**
-     * Update a selected cell day item.
-     *
-     * @param dayItem  The DayItem information held by the cell item.
-     * *
-     * @return The selected row of the weeks list, to be updated.
-     */
-    private fun updateSelectedDay(dayItem: DayItem): Int {
-        // update highlighted/selected day
+    private fun updateSelectedDay(dayItem: DayItem) {
+        updateSelection(dayItem)
+        val dayWeekIndex = weeks.indexOfFirst { it.firstDay.isSameWeek(dayItem.date) }
+        if (dayWeekIndex != -1) {
+            if (dayWeekIndex != currentWeekIndex) {
+                weeksAdapter.notifyItemChanged(currentWeekIndex)
+            }
+            currentWeekIndex = dayWeekIndex
+            weeksAdapter.notifyItemChanged(dayWeekIndex)
+        }
+    }
+
+    private fun updateSelection(dayItem: DayItem) {
         if (dayItem != selectedDay) {
             dayItem.isSelected = true
             selectedDay?.isSelected = false
             selectedDay = dayItem
         }
-
-        var currentWeekIndex: Int? = null
-        for (c in 0 until weeks.size) {
-            val week = weeks[c].firstDay
-            if (dayItem.date.isSameWeek(week)) {
-                currentWeekIndex = c
-                break
-            }
-        }
-
-        if (currentWeekIndex != null) {
-            // highlighted day has changed, update the rows concerned
-            if (currentWeekIndex != mCurrentListPosition) {
-                updateItemAtPosition(mCurrentListPosition)
-            }
-            mCurrentListPosition = currentWeekIndex
-            updateItemAtPosition(currentWeekIndex)
-        }
-
-        return mCurrentListPosition
     }
 
     fun dispose() = subscription?.unsubscribe()

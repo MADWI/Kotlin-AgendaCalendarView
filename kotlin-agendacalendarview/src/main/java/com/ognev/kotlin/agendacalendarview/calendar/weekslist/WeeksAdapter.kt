@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,7 +20,6 @@ import net.danlew.android.joda.DateUtils
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.util.ArrayList
 
 class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCalendarViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
@@ -62,16 +60,19 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
         /**
          * List of layout containers for each day
          */
-        private var mCells: List<LinearLayout>? = null
-        private val mTxtMonth: TextView
-        private val mMonthBackground: FrameLayout
+        private var cells = mutableListOf<LinearLayout>()
+        private val monthLabelView: TextView = itemView.findViewById(R.id.month_label) as TextView
         private val monthFormatter = DateTimeFormat.forPattern("MMM")
 
         init {
-            mTxtMonth = itemView.findViewById(R.id.month_label) as TextView
-            mMonthBackground = itemView.findViewById(R.id.month_background) as FrameLayout
-            val daysContainer = itemView.findViewById(R.id.week_days_container) as LinearLayout
+            val daysContainer = itemView.findViewById<LinearLayout>(R.id.week_days_container)
             setUpChildren(daysContainer)
+        }
+
+        private fun setUpChildren(daysContainer: LinearLayout) {
+            for (i in 0 until daysContainer.childCount) {
+                cells.add(daysContainer.getChildAt(i) as LinearLayout)
+            }
         }
 
         fun bindWeek(weekItem: WeekItem) {
@@ -81,7 +82,7 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
 
             for (c in 0 until dayItems.size) {
                 val dayItem = dayItems[c]
-                val cellItem = mCells!![c]
+                val cellItem = cells[c]
                 val txtDay = cellItem.findViewById(R.id.view_day_day_label) as TextView
                 val txtMonth = cellItem.findViewById(R.id.view_day_month_label) as TextView
                 val circleView = cellItem.findViewById<View>(R.id.view_day_circle_selected)
@@ -132,38 +133,31 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
                 addEventsMarks(eventsDotsContainer, dayItem)
                 // Check if the month label has to be displayed
                 if (dayItem.date.dayOfMonth == 15) {
-                    mTxtMonth.visibility = View.VISIBLE
+                    monthLabelView.visibility = View.VISIBLE
                     var month = monthDateFormat.print(weekItem.firstDay).toUpperCase()
                     if (LocalDate.now().yearOfEra != weekItem.firstDay.year) {
                         month += String.format(" %d", weekItem.firstDay.year)
                     }
-                    mTxtMonth.text = month
+                    monthLabelView.text = month
                 }
             }
         }
 
-        private fun setUpChildren(daysContainer: LinearLayout) {
-            mCells = ArrayList()
-            for (i in 0..daysContainer.childCount - 1) {
-                (mCells as ArrayList<LinearLayout>).add(daysContainer.getChildAt(i) as LinearLayout)
-            }
-        }
-
         private fun setUpMonthOverlay() {
-            mTxtMonth.visibility = View.GONE
+            monthLabelView.visibility = View.GONE
             animateMonthTextAlpha()
             if (isAlphaSet) {
-                mTxtMonth.alpha = 1f
+                monthLabelView.alpha = 1f
             } else {
-                mTxtMonth.alpha = 0f
+                monthLabelView.alpha = 0f
             }
         }
 
         private fun animateMonthTextAlpha() {
             if (isDragging) {
-                animateAlphaForView(mTxtMonth, 1f) { isAlphaSet = true }
+                animateAlphaForView(monthLabelView, 1f) { isAlphaSet = true }
             } else {
-                animateAlphaForView(mTxtMonth, 0f) { isAlphaSet = false }
+                animateAlphaForView(monthLabelView, 0f) { isAlphaSet = false }
             }
         }
 

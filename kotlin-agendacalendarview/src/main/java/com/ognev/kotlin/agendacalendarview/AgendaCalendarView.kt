@@ -67,9 +67,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     }
 
     fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
-        val startDate = minDate.withDayOfMonth(1)
-        val endDate = maxDate.withDayOfMonth(30)
-        val weeks = weeksProvider.getWeeksBetweenDates(startDate, endDate)
+        val weeks = weeksProvider.getWeeksBetweenDates(minDate, maxDate)
         this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
 
         val agendaAdapter = AgendaAdapter()
