@@ -10,6 +10,5 @@ interface CalendarEvent {
 
     var dayReference: DayItem
 
-    //TODO refactor
-    fun hasEvent(): Boolean
+    fun hasEvent() = event != null
 }
