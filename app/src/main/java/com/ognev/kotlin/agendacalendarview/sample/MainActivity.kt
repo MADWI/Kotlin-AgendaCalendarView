@@ -13,16 +13,8 @@ import java.util.Locale
 class MainActivity : AppCompatActivity(), CalendarController {
 
     private val locale = Locale.ENGLISH
-    private val maxDate: Calendar by lazy {
-        Calendar.getInstance().apply {
-            add(Calendar.MONTH, 3)
-        }
-    }
-    private val minDate: Calendar by lazy {
-        Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_MONTH, 1)
-        }
-    }
+    private val minDate = LocalDate.now().withDayOfMonth(1)
+    private val maxDate = minDate.plusMonths(5)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

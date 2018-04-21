@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeekListView
 import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeeksAdapter
@@ -28,7 +27,7 @@ import rx.Subscription
  * The calendar view is a freely scrolling view that allows the user to browse between days of the
  * year.
  */
-open class CalendarView : LinearLayout {
+class CalendarView : LinearLayout {
 
     /**
      * The current highlighted day in blue
@@ -40,16 +39,10 @@ open class CalendarView : LinearLayout {
      */
     lateinit var listViewWeeks: WeekListView
         private set
-    /**
-     * The adapter for the weeks list
-     */
 
-    private var mWeeksAdapter: WeeksAdapter? = null
-
-    /**
-     * Top of the calendar view layout, the week days list
-     */
+    private lateinit var weeksAdapter: WeeksAdapter
     private lateinit var dayNamesHeader: LinearLayout
+    private lateinit var weeks: List<WeekItem>
 
     /**
      * The current row displayed at top of the list
@@ -103,11 +96,10 @@ open class CalendarView : LinearLayout {
             }
     }
 
-    fun init(calendarManager: CalendarManager, agendaCalendarViewAttributes: AgendaCalendarViewAttributes) {
-        val weeks = calendarManager.weeks
-
+    fun init(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+        this.weeks = weeks
         setupDayNamesHeader()
-        setUpAdapter(weeks, agendaCalendarViewAttributes)
+        setupAdapter(weeks, viewAttributes)
         scrollToCurrentWeek(weeks)
     }
 
@@ -121,8 +113,8 @@ open class CalendarView : LinearLayout {
     }
 
     private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
-        val toady = LocalDate.now()
-        val weekIndex = weeks.indexOfFirst { toady.isSameWeek(it.date) }
+        val today = LocalDate.now()
+        val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.firstDay) }
         listViewWeeks.post { scrollToPosition(weekIndex) }
     }
 
@@ -140,15 +132,10 @@ open class CalendarView : LinearLayout {
         weeksAdapter.notifyItemChanged(position)
     }
 
-    /**
-     * Creates a new adapter if necessary and sets up its parameters.
-     */
-    private fun setUpAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
-        if (mWeeksAdapter == null) {
-            mWeeksAdapter = WeeksAdapter(context, viewAttributes)
-            listViewWeeks.adapter = mWeeksAdapter
-        }
-        mWeeksAdapter!!.updateWeeksItems(weeks)
+    private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+        weeksAdapter = WeeksAdapter(context, viewAttributes)
+        listViewWeeks.adapter = weeksAdapter
+        weeksAdapter.updateWeeksItems(weeks)
     }
 
     private fun setupDayNamesHeader() {
@@ -193,9 +180,8 @@ open class CalendarView : LinearLayout {
         }
 
         var currentWeekIndex: Int? = null
-        val weeks = CalendarManager.instance!!.weeks
         for (c in 0 until weeks.size) {
-            val week = weeks[c].date
+            val week = weeks[c].firstDay
             if (dayItem.date.isSameWeek(week)) {
                 currentWeekIndex = c
                 break

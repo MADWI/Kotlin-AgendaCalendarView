@@ -16,9 +16,9 @@ import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import com.ognev.kotlin.agendacalendarview.utils.Event
+import org.joda.time.LocalDate
 import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
-import java.util.Calendar
 
 /**
  * View holding the agenda and calendar view together.
@@ -28,9 +28,10 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     private lateinit var agendaView: AgendaView
     private lateinit var calendarView: CalendarView
+    private val viewAttributes: AgendaCalendarViewAttributes
+    private val weeksProvider = WeeksProvider()
     private var subscription: Subscription? = null
     private var calendarController: CalendarController? = null
-    private val viewAttributes: AgendaCalendarViewAttributes
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ColorOptionsView, 0, 0)
@@ -67,8 +68,8 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     override
     fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) {
-        if (CalendarManager.instance!!.events.size > 0) {
-            val event = CalendarManager.instance!!.events[position]
+        if (CalendarManager.instance.events.size > 0) {
+            val event = CalendarManager.instance.events[position]
             calendarView.scrollToDate(event)
             calendarController?.onScrollToDate(event.date)
         }
@@ -78,21 +79,21 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         this.calendarController = calendarController
     }
 
-    fun init(minDate: Calendar, maxDate: Calendar, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
-        CalendarManager.getInstance(context).apply {
-            buildCal(minDate, maxDate)
-            fillCalendarEventsWithEmptyEvents(events)
-        }
+    fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
+        val startDate = minDate.withDayOfMonth(1)
+        val endDate = maxDate.withDayOfMonth(30)
+        val weeks = weeksProvider.getWeeksBetweenDates(startDate, endDate)
+        CalendarManager.instance.fillCalendarEventsWithEmptyEvents(events, weeks)
 
         // Load agenda events and scroll to current day
         val agendaAdapter = AgendaAdapter()
         agendaView.agendaListView.adapter = agendaAdapter
         agendaView.agendaListView.setOnStickyHeaderChangedListener(this)
 
-        agendaAdapter.setEvents(CalendarManager.getInstance(context).events)
+        agendaAdapter.setEvents(CalendarManager.instance.events)
         agendaAdapter.setEventAdapter(eventRenderer)
 
-        calendarView.init(CalendarManager.getInstance(context), viewAttributes)
+        calendarView.init(weeks, viewAttributes)
     }
 
     private fun View.getColor(@ColorRes id: Int) = ContextCompat.getColor(context, id)

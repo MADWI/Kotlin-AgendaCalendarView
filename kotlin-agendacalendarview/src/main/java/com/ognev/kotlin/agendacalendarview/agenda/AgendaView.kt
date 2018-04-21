@@ -50,7 +50,7 @@ class AgendaView(context: Context, attrs: AttributeSet) : FrameLayout(context, a
     }
 
     private fun scrollToDate(date: LocalDate) {
-        val events = CalendarManager.instance!!.events
+        val events = CalendarManager.instance.events
         val selection = events.indexOfFirst { date.compareTo(it.date) == 0 }
         post { agendaListView.setSelection(selection) }
     }

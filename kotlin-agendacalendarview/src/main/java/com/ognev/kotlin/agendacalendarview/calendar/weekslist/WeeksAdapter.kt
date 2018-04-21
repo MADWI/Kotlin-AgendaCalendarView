@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.ognev.kotlin.agendacalendarview.CalendarManager
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.DayItem
@@ -27,28 +26,24 @@ import java.util.ArrayList
 class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCalendarViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
-    val weeksList: List<WeekItem>
     var isDragging: Boolean = false
         set(dragging) {
             if (dragging != this.isDragging) {
                 field = dragging
-                notifyItemRangeChanged(0, weeksList.size)
+                notifyItemRangeChanged(0, weeks.size)
             }
         }
     var isAlphaSet: Boolean = false
+    private val weeks = mutableListOf<WeekItem>()
     private val monthDateFormat: DateTimeFormatter = DateTimeFormat.forPattern("MMM")
 
-    init {
-        weeksList = CalendarManager.instance!!.weeks
-    }
-
     fun updateWeeksItems(weekItems: List<WeekItem>) {
-        //    this.mWeeksList.clear();
-        //    this.mWeeksList.addAll(weekItems);
+        weeks.clear()
+        weeks.addAll(weekItems)
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = weeksList.size
+    override fun getItemCount() = weeks.size
 
     override
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeekViewHolder {
@@ -58,7 +53,7 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
 
     override
     fun onBindViewHolder(weekViewHolder: WeekViewHolder, position: Int) {
-        val weekItem = weeksList[position]
+        val weekItem = weeks[position]
         weekViewHolder.bindWeek(weekItem)
     }
 
@@ -138,9 +133,9 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCale
                 // Check if the month label has to be displayed
                 if (dayItem.date.dayOfMonth == 15) {
                     mTxtMonth.visibility = View.VISIBLE
-                    var month = monthDateFormat.print(weekItem.date).toUpperCase()
-                    if (LocalDate.now().yearOfEra != weekItem.date.year) {
-                        month += String.format(" %d", weekItem.date.year)
+                    var month = monthDateFormat.print(weekItem.firstDay).toUpperCase()
+                    if (LocalDate.now().yearOfEra != weekItem.firstDay.year) {
+                        month += String.format(" %d", weekItem.firstDay.year)
                     }
                     mTxtMonth.text = month
                 }
