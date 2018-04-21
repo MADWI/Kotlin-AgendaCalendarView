@@ -27,7 +27,7 @@ import rx.Subscription
  * The calendar view is a freely scrolling view that allows the user to browse between days of the
  * year.
  */
-class CalendarView : LinearLayout {
+class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     /**
      * The current highlighted day in blue
@@ -66,9 +66,7 @@ class CalendarView : LinearLayout {
         resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
     }
 
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    init {
         LayoutInflater.from(context).inflate(R.layout.view_calendar, this, true)
         orientation = VERTICAL
     }
@@ -77,15 +75,10 @@ class CalendarView : LinearLayout {
         super.onFinishInflate()
         dayNamesHeader = findViewById(R.id.cal_day_names)
         listViewWeeks = findViewById(R.id.list_week)
-        //TODO move initialization to listViewWeeks
-        listViewWeeks.layoutManager = LinearLayoutManager(context)
-        listViewWeeks.setHasFixedSize(true)
-        listViewWeeks.itemAnimator = null
-        listViewWeeks.setSnapEnabled(true)
+        subscribeOnEvents()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
+    private fun subscribeOnEvents() {
         subscription = BusProvider.instance.toObservable()
             .subscribe { event ->
                 when (event) {

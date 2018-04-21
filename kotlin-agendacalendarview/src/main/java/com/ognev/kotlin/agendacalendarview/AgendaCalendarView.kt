@@ -57,11 +57,9 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     override
     fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) {
-        if (agendaEvents.size > 0) {
-            val event = agendaEvents[position]
-            calendarView.scrollToDate(event)
-            calendarController?.onScrollToDate(event.date)
-        }
+        val event = agendaEvents[position]
+        calendarView.scrollToDate(event)
+        calendarController?.onScrollToDate(event.date)
     }
 
     fun setCallbacks(calendarController: CalendarController) {

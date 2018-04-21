@@ -7,66 +7,45 @@ import android.view.View
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
 
-class WeekListView : RecyclerView {
-    private var mUserScrolling = false
-    private var mScrolling = false
+class WeekListView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 
-    // region Constructors
+    private var userScrolling = false
+    private var scrolling = false
+    private val centerView: View
+        get() = getChildClosestToPosition(measuredHeight / 2)!!
 
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    // endregion
-
-    // region Public methods
-
-    /**
-     * Enable snapping behaviour for this recyclerView
-
-     * @param enabled enable or disable the snapping behaviour
-     */
-    fun setSnapEnabled(enabled: Boolean) {
-        if (enabled) {
-            addOnScrollListener(mScrollListener)
-        } else {
-            removeOnScrollListener(mScrollListener)
-        }
+    init {
+        itemAnimator = null
+        setHasFixedSize(true)
     }
 
-    // endregion
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        addOnScrollListener(scrollListener)
+    }
 
-    // region Private methods
-
-    private val mScrollListener = object : OnScrollListener() {
-        override
-        fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-        }
+    private val scrollListener = object : OnScrollListener() {
 
         override
         fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-            val weeksAdapter = getAdapter() as WeeksAdapter
-
+            val weeksAdapter = adapter as WeeksAdapter
             when (newState) {
                 SCROLL_STATE_IDLE -> {
-                    if (mUserScrolling) {
+                    if (userScrolling) {
                         scrollToView(centerView)
                         postDelayed({ weeksAdapter.isDragging = false }, 700) // Wait for recyclerView to settle
                     }
 
-                    mUserScrolling = false
-                    mScrolling = false
+                    userScrolling = false
+                    scrolling = false
                 }
-            // If scroll is caused by a touch (scroll touch, not any touch)
+                // If scroll is caused by a touch (scroll touch, not any touch)
                 SCROLL_STATE_DRAGGING -> {
                     BusProvider.instance.send(CalendarScrolled())
                     // If scroll was initiated already, this is not a user scrolling, but probably a tap, else set userScrolling
-                    if (!mScrolling) {
-                        mUserScrolling = true
+                    if (!scrolling) {
+                        userScrolling = true
                     }
                     weeksAdapter.isDragging = (true)
                 }
@@ -74,26 +53,24 @@ class WeekListView : RecyclerView {
                     // The user's finger is not touching the list anymore, no need
                     // for any alpha animation then
                     weeksAdapter.isAlphaSet = (true)
-                    mScrolling = true
+                    scrolling = true
                 }
             }
         }
     }
 
     private fun getChildClosestToPosition(y: Int): View? {
-        if (getChildCount() <= 0) {
+        if (childCount <= 0) {
             return null
         }
 
-        val itemHeight = getChildAt(0).getMeasuredHeight()
-
+        val itemHeight = getChildAt(0).measuredHeight
         var closestY = 9999
         var closestChild: View? = null
 
-        for (i in 0..getChildCount() - 1) {
+        for (i in 0 until childCount) {
             val child = getChildAt(i)
-
-            val childCenterY = child.getY() + itemHeight / 2
+            val childCenterY = child.y + itemHeight / 2
             val yDistance = childCenterY - y
 
             // If child center is closer than previous closest, set it as closest
@@ -106,31 +83,21 @@ class WeekListView : RecyclerView {
         return closestChild
     }
 
-    private val centerView: View
-        get() = getChildClosestToPosition(measuredHeight / 2)!!
-
     private fun scrollToView(child: View?) {
         if (child == null) {
             return
         }
-
         stopScroll()
-
         val scrollDistance = getScrollDistance(child)
-
         if (scrollDistance != 0) {
             smoothScrollBy(0, scrollDistance)
         }
     }
 
     private fun getScrollDistance(child: View): Int {
-        val itemHeight = getChildAt(0).getMeasuredHeight()
-        val centerY = getMeasuredHeight() / 2
-
-        val childCenterY = child.getY() + itemHeight / 2
-
+        val itemHeight = getChildAt(0).measuredHeight
+        val centerY = measuredHeight / 2
+        val childCenterY = child.y + itemHeight / 2
         return childCenterY.toInt() - centerY
     }
-
-    // endregion
 }
