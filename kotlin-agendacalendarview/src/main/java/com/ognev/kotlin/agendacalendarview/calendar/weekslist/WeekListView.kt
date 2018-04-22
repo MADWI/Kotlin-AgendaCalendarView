@@ -29,14 +29,11 @@ class WeekListView(context: Context, attrs: AttributeSet) : RecyclerView(context
         override
         fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-            val weeksAdapter = adapter as WeeksAdapter
             when (newState) {
                 SCROLL_STATE_IDLE -> {
                     if (userScrolling) {
                         scrollToView(centerView)
-                        postDelayed({ weeksAdapter.isDragging = false }, 700) // Wait for recyclerView to settle
                     }
-
                     userScrolling = false
                     scrolling = false
                 }
@@ -47,12 +44,10 @@ class WeekListView(context: Context, attrs: AttributeSet) : RecyclerView(context
                     if (!scrolling) {
                         userScrolling = true
                     }
-                    weeksAdapter.isDragging = (true)
                 }
                 SCROLL_STATE_SETTLING -> {
                     // The user's finger is not touching the list anymore, no need
                     // for any alpha animation then
-                    weeksAdapter.isAlphaSet = (true)
                     scrolling = true
                 }
             }

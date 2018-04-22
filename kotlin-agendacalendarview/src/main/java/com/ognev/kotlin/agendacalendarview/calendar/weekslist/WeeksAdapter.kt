@@ -11,29 +11,19 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import net.danlew.android.joda.DateUtils
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 class WeeksAdapter(private val mContext: Context, val viewAttributes: ViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
-    var isDragging: Boolean = false
-        set(dragging) {
-            if (dragging != this.isDragging) {
-                field = dragging
-                notifyItemRangeChanged(0, weeks.size)
-            }
-        }
-    var isAlphaSet: Boolean = false
     private val weeks = mutableListOf<WeekItem>()
-    private val monthDateFormat: DateTimeFormatter = DateTimeFormat.forPattern("MMM")
 
     fun updateWeeksItems(weekItems: List<WeekItem>) {
         weeks.clear()
@@ -61,7 +51,6 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: ViewAttrib
          * List of layout containers for each day
          */
         private var cells = mutableListOf<LinearLayout>()
-        private val monthLabelView: TextView = itemView.findViewById(R.id.month_label) as TextView
         private val monthFormatter = DateTimeFormat.forPattern("MMM")
 
         init {
@@ -76,8 +65,6 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: ViewAttrib
         }
 
         fun bindWeek(weekItem: WeekItem) {
-            setUpMonthOverlay()
-
             val dayItems = weekItem.dayItems
 
             for (c in 0 until dayItems.size) {
@@ -131,43 +118,7 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: ViewAttrib
                 }
 
                 addEventsMarks(eventsDotsContainer, dayItem)
-                // Check if the month label has to be displayed
-                if (dayItem.date.dayOfMonth == 15) {
-                    monthLabelView.visibility = View.VISIBLE
-                    var month = monthDateFormat.print(weekItem.firstDay).toUpperCase()
-                    if (LocalDate.now().yearOfEra != weekItem.firstDay.year) {
-                        month += String.format(" %d", weekItem.firstDay.year)
-                    }
-                    monthLabelView.text = month
-                }
             }
-        }
-
-        private fun setUpMonthOverlay() {
-            monthLabelView.visibility = View.GONE
-            animateMonthTextAlpha()
-            if (isAlphaSet) {
-                monthLabelView.alpha = 1f
-            } else {
-                monthLabelView.alpha = 0f
-            }
-        }
-
-        private fun animateMonthTextAlpha() {
-            if (isDragging) {
-                animateAlphaForView(monthLabelView, 1f) { isAlphaSet = true }
-            } else {
-                animateAlphaForView(monthLabelView, 0f) { isAlphaSet = false }
-            }
-        }
-
-        private fun animateAlphaForView(view: View, toAlpha: Float, endAction: () -> Unit) {
-            view.animate()
-                .setDuration(FADE_DURATION)
-                .alpha(toAlpha)
-                .withEndAction {
-                    endAction.invoke()
-                }
         }
 
         private fun addEventsMarks(eventsMarksContainer: LinearLayout, dayItem: DayItem) {
@@ -187,9 +138,5 @@ class WeeksAdapter(private val mContext: Context, val viewAttributes: ViewAttrib
                 eventsMarksContainer.addView(dotView)
             }
         }
-    }
-
-    companion object {
-        const val FADE_DURATION: Long = 250
     }
 }
