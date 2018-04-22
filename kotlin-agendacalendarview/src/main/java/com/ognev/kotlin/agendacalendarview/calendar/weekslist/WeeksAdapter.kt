@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
+import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
@@ -21,7 +21,7 @@ import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 
-class WeeksAdapter(private val mContext: Context, val viewAttributes: AgendaCalendarViewAttributes)
+class WeeksAdapter(private val mContext: Context, val viewAttributes: ViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
     var isDragging: Boolean = false

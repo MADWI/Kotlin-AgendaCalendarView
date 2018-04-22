@@ -2,7 +2,7 @@
 	<!-- Calendar -->
 	<string name="month_half_name_format">MMM</string>
 	<string name="month_name_format">MMMM</string>
-	<string name="day_name_format">EEE</string>
+	<string name="day_name_pattern">EEE</string>
 	<string name="header_date">EEEE, d MMMM</string>
 
 	<!-- Agenda -->

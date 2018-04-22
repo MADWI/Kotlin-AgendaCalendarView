@@ -4,20 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeekListView
 import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeeksAdapter
-import com.ognev.kotlin.agendacalendarview.models.AgendaCalendarViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
+import kotlinx.android.synthetic.main.view_calendar.view.*
 import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
 import rx.Subscription
 
 /**
@@ -27,10 +25,7 @@ import rx.Subscription
 class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     private var selectedDay: DayItem? = null
-    private val dayNameFormatter = DateTimeFormat.forPattern("EEE")
-    private lateinit var weekListView: WeekListView
     private lateinit var weeksAdapter: WeeksAdapter
-    private lateinit var dayNamesHeader: LinearLayout
     private lateinit var weeks: List<WeekItem>
     private var currentWeekIndex = 0
     private var subscription: Subscription? = null
@@ -41,23 +36,15 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         orientation = VERTICAL
     }
 
-    fun init(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+    fun init(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
         this.weeks = weeks
-        setupDayNamesHeader()
+        daysNamesHeaderView.setBackgroundColor(viewAttributes.daysNamesHeaderColor)
+        daysNamesHeaderView.setTextColor(viewAttributes.daysNamesTextColor)
         setupAdapter(weeks, viewAttributes)
         scrollToCurrentWeek(weeks)
     }
 
-    private fun setupDayNamesHeader() {
-        val today = LocalDate.now()
-        for (i in 0 until dayNamesHeader.childCount) {
-            val dayTextView = dayNamesHeader.getChildAt(i) as TextView
-            val day = today.withDayOfWeek(i + 1)
-            dayTextView.text = dayNameFormatter.print(day).toUpperCase()
-        }
-    }
-
-    private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+    private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
         weeksAdapter = WeeksAdapter(context, viewAttributes)
         weekListView.adapter = weeksAdapter
         weeksAdapter.updateWeeksItems(weeks)
@@ -71,8 +58,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        dayNamesHeader = findViewById(R.id.cal_day_names)
-        weekListView = findViewById(R.id.list_week)
         subscribeOnEvents()
     }
 
@@ -111,8 +96,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         updateSelectedDay(calendarEvent.dayReference)
         weekListView.scrollToPosition(currentWeekIndex)
     }
-
-    override fun setBackgroundColor(color: Int) = weekListView.setBackgroundColor(color)
 
     fun dispose() {
         subscription?.unsubscribe()

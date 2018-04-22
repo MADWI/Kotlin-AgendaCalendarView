@@ -24,4 +24,6 @@
 	<dimen name="agenda_event_view_padding_top">5dp</dimen>
 	<dimen name="agenda_event_view_padding_right">15dp</dimen>
 	<dimen name="agenda_event_view_padding_bottom">5dp</dimen>
+    <dimen name="day_name_text_size">12dp</dimen>
+	<dimen name="day_name_padding">5dp</dimen>
 </resources>

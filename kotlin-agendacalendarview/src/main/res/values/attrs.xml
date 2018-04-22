@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<declare-styleable name="AgendaCalendarView">
-		<attr name="calendarHeaderColor" format="color"/>
+		<attr name="daysNamesHeaderColor" format="color"/>
+		<attr name="daysNamesTextColor" format="color"/>
 		<attr name="calendarColor" format="color"/>
 		<attr name="calendarSelectedDayTextColor" format="color"/>
 		<attr name="calendarMonthTextColor" format="color"/>
