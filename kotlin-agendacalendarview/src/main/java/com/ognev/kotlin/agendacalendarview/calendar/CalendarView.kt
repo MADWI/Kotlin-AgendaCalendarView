@@ -1,10 +1,8 @@
 package com.ognev.kotlin.agendacalendarview.calendar
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.R
@@ -30,29 +28,45 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     private var selectedDay: DayItem? = null
     private val dayNameFormatter = DateTimeFormat.forPattern("EEE")
-    private val expandedCalendarHeight: Int by lazy {
-        val headerHeight = resources.getDimension(R.dimen.calendar_header_height)
-        val rowsHeight = resources.getDimension(R.dimen.day_cell_height) * 5
-        (headerHeight + rowsHeight).toInt()
-    }
-    private val collapsedCalendarHeight: Int by lazy {
-        val headerHeight = resources.getDimension(R.dimen.calendar_header_height)
-        val rowsHeight = resources.getDimension(R.dimen.day_cell_height) * 2
-        (headerHeight + rowsHeight).toInt()
-    }
-    private val heightAnimationDuration: Long by lazy {
-        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-    }
     private lateinit var weekListView: WeekListView
     private lateinit var weeksAdapter: WeeksAdapter
     private lateinit var dayNamesHeader: LinearLayout
     private lateinit var weeks: List<WeekItem>
     private var currentWeekIndex = 0
     private var subscription: Subscription? = null
+    private val calendarAnimator = CalendarAnimator(this)
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_calendar, this, true)
         orientation = VERTICAL
+    }
+
+    fun init(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+        this.weeks = weeks
+        setupDayNamesHeader()
+        setupAdapter(weeks, viewAttributes)
+        scrollToCurrentWeek(weeks)
+    }
+
+    private fun setupDayNamesHeader() {
+        val today = LocalDate.now()
+        for (i in 0 until dayNamesHeader.childCount) {
+            val dayTextView = dayNamesHeader.getChildAt(i) as TextView
+            val day = today.withDayOfWeek(i + 1)
+            dayTextView.text = dayNameFormatter.print(day).toUpperCase()
+        }
+    }
+
+    private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
+        weeksAdapter = WeeksAdapter(context, viewAttributes)
+        weekListView.adapter = weeksAdapter
+        weeksAdapter.updateWeeksItems(weeks)
+    }
+
+    private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
+        val today = LocalDate.now()
+        val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.firstDay) }
+        weekListView.scrollToPosition(weekIndex)
     }
 
     override fun onFinishInflate() {
@@ -66,65 +80,11 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         subscription = BusProvider.instance.toObservable()
             .subscribe { event ->
                 when (event) {
-                    is CalendarScrolled -> expandCalendarView()
-                    is AgendaListViewTouched -> collapseCalendarView()
+                    is CalendarScrolled -> calendarAnimator.expandView()
+                    is AgendaListViewTouched -> calendarAnimator.collapseView()
                     is DayClicked -> updateSelectedDay(event.day)
                 }
             }
-    }
-
-    fun init(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
-        this.weeks = weeks
-        setupDayNamesHeader()
-        setupAdapter(weeks, viewAttributes)
-        scrollToCurrentWeek(weeks)
-    }
-
-    fun scrollToDate(calendarEvent: CalendarEvent) {
-        updateSelectedDay(calendarEvent.dayReference)
-        weekListView.scrollToPosition(currentWeekIndex)
-    }
-
-    private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
-        val today = LocalDate.now()
-        val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.firstDay) }
-        weekListView.scrollToPosition(weekIndex)
-    }
-
-    override fun setBackgroundColor(color: Int) {
-        weekListView.setBackgroundColor(color)
-    }
-
-    private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: AgendaCalendarViewAttributes) {
-        weeksAdapter = WeeksAdapter(context, viewAttributes)
-        weekListView.adapter = weeksAdapter
-        weeksAdapter.updateWeeksItems(weeks)
-    }
-
-    private fun setupDayNamesHeader() {
-        val today = LocalDate.now()
-        for (i in 0 until dayNamesHeader.childCount) {
-            val dayTextView = dayNamesHeader.getChildAt(i) as TextView
-            val day = today.withDayOfWeek(i + 1)
-            dayTextView.text = dayNameFormatter.print(day).toUpperCase()
-        }
-    }
-
-    private fun expandCalendarView() = animateCalendarHeightToValue(expandedCalendarHeight)
-
-    private fun collapseCalendarView() = animateCalendarHeightToValue(collapsedCalendarHeight)
-
-    private fun animateCalendarHeightToValue(endHeight: Int) {
-        val animator = ValueAnimator.ofInt(measuredHeight, endHeight)
-        animator.duration = heightAnimationDuration
-        animator.addUpdateListener { setCalendarHeight(it.animatedValue as Int) }
-        animator.start()
-    }
-
-    private fun setCalendarHeight(height: Int) {
-        val layoutParams = layoutParams as ViewGroup.LayoutParams
-        layoutParams.height = height
-        setLayoutParams(layoutParams)
     }
 
     private fun updateSelectedDay(dayItem: DayItem) {
@@ -147,7 +107,17 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         }
     }
 
-    fun dispose() = subscription?.unsubscribe()
+    fun scrollToDate(calendarEvent: CalendarEvent) {
+        updateSelectedDay(calendarEvent.dayReference)
+        weekListView.scrollToPosition(currentWeekIndex)
+    }
+
+    override fun setBackgroundColor(color: Int) = weekListView.setBackgroundColor(color)
+
+    fun dispose() {
+        subscription?.unsubscribe()
+        calendarAnimator.dispose()
+    }
 
     private fun LocalDate.isSameWeek(date: LocalDate): Boolean {
         return this.weekOfWeekyear == date.weekOfWeekyear
