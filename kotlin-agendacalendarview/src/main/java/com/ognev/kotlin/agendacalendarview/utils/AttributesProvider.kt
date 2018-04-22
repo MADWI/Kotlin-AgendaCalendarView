@@ -18,10 +18,9 @@ class AttributesProvider {
             monthTextColor = attrs.getColor(AgendaCalendarView_calendarMonthTextColor, getColor(context, theme_text_icons)),
             selectedDayTextColor = attrs.getColor(AgendaCalendarView_calendarSelectedDayTextColor, getColor(context, theme_text_icons)),
             currentDayTextColor = attrs.getColor(AgendaCalendarView_calendarCurrentDayTextColor, getColor(context, calendar_text_current_day)),
-            pastDayTextColor = attrs.getColor(AgendaCalendarView_calendarPastDayTextColor, getColor(context, theme_light_primary)),
             circleBackgroundColor = attrs.getDrawable(AgendaCalendarView_circleBackgroundColor),
-            cellNowadaysDayColor = attrs.getColor(AgendaCalendarView_cellNowadaysDayColor, getColor(context, android.R.color.white)),
-            cellPastBackgroundColor = attrs.getColor(AgendaCalendarView_cellPastBackgroundColor, getColor(context, calendar_past_days_bg)),
+            cellDayBackgroundColor = attrs.getColor(AgendaCalendarView_cellDayBackgroundColor, getColor(context, android.R.color.white)),
+            cellDayTextColor = attrs.getColor(AgendaCalendarView_cellDayTextColor, getColor(context, android.R.color.white)),
             cellEventMarkColor = attrs.getColor(AgendaCalendarView_cellEventMarkColor, getColor(context, azure)),
             cellEventPlusShowThreshold = attrs.getColor(AgendaCalendarView_cellEventPlusShowThreshold, 4)
         ).also { attrs.recycle() }

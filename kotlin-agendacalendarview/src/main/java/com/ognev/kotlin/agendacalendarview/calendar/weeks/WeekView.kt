@@ -15,7 +15,6 @@ import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import net.danlew.android.joda.DateUtils
-import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 
 class WeekView(context: Context) : LinearLayout(context) {
@@ -41,9 +40,10 @@ class WeekView(context: Context) : LinearLayout(context) {
             val eventsContainer = cellItem.findViewById(R.id.events_marks_container) as LinearLayout
             cellItem.setOnClickListener { BusProvider.instance.send(DayClicked(dayItem)) }
 
+            txtDay.setTextColor(viewAttributes.cellDayTextColor)
+            cellItem.setBackgroundColor(viewAttributes.cellDayBackgroundColor)
             circleView.setBackgroundDrawable(viewAttributes.circleBackgroundColor)
             txtMonth.visibility = View.GONE
-            txtDay.setTextColor(viewAttributes.pastDayTextColor)
             txtMonth.setTextColor(viewAttributes.monthTextColor)
             circleView.visibility = View.GONE
 
@@ -60,15 +60,6 @@ class WeekView(context: Context) : LinearLayout(context) {
                 txtMonth.text = monthFormatter.print(dayItem.date)
                 txtDay.setTypeface(null, Typeface.BOLD)
                 txtMonth.setTypeface(null, Typeface.BOLD)
-            }
-
-            // Check if this day is in the past
-            if (dayItem.date.isAfter(LocalDate.now()) && !DateUtils.isToday(dayItem.date)) {
-                txtDay.setTextColor(viewAttributes.pastDayTextColor)
-                txtMonth.setTextColor(viewAttributes.monthTextColor)
-                cellItem.setBackgroundColor(viewAttributes.cellPastBackgroundColor)
-            } else {
-                cellItem.setBackgroundColor(viewAttributes.cellNowadaysDayColor)
             }
 
             // Highlight the cell if this day is today

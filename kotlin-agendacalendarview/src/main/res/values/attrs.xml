@@ -6,11 +6,10 @@
 		<attr name="calendarColor" format="color"/>
 		<attr name="calendarSelectedDayTextColor" format="color"/>
 		<attr name="calendarMonthTextColor" format="color"/>
-		<attr name="calendarPastDayTextColor" format="color"/>
 		<attr name="circleBackgroundColor" format="color"/>
 		<attr name="calendarCurrentDayTextColor" format="color"/>
-		<attr name="cellPastBackgroundColor" format="color"/>
-		<attr name="cellNowadaysDayColor" format="color"/>
+		<attr name="cellDayBackgroundColor" format="color"/>
+		<attr name="cellDayTextColor" format="color"/>
 		<attr name="cellEventMarkColor" format="color"/>
 		<attr name="cellEventPlusShowThreshold" format="integer"/>
 	</declare-styleable>
