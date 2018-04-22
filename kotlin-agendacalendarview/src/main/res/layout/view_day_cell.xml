@@ -33,7 +33,7 @@
                 style="@style/CalendarCellText"/>
     </FrameLayout>
 
-    <LinearLayout android:id="@+id/events_dots_container"
+    <LinearLayout android:id="@+id/events_marks_container"
                   android:layout_width="match_parent"
                   android:gravity="center"
                   android:orientation="horizontal"

@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview.calendar.weekslist
+package com.ognev.kotlin.agendacalendarview.calendar.weeks
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -7,7 +7,7 @@ import android.view.View
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
 
-class WeekListView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
+class WeeksView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 
     private var userScrolling = false
     private var scrolling = false

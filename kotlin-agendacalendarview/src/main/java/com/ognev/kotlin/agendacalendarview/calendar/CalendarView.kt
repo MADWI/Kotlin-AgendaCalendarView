@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeeksAdapter
+import com.ognev.kotlin.agendacalendarview.calendar.weeks.WeeksAdapter
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
@@ -45,15 +45,15 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
     }
 
     private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
-        weeksAdapter = WeeksAdapter(context, viewAttributes)
-        weekListView.adapter = weeksAdapter
+        weeksAdapter = WeeksAdapter(viewAttributes)
+        weeksView.adapter = weeksAdapter
         weeksAdapter.updateWeeksItems(weeks)
     }
 
     private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
         val today = LocalDate.now()
         val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.firstDay) }
-        weekListView.scrollToPosition(weekIndex)
+        weeksView.scrollToPosition(weekIndex)
     }
 
     override fun onFinishInflate() {
@@ -94,7 +94,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     fun scrollToDate(calendarEvent: CalendarEvent) {
         updateSelectedDay(calendarEvent.dayReference)
-        weekListView.scrollToPosition(currentWeekIndex)
+        weeksView.scrollToPosition(currentWeekIndex)
     }
 
     fun dispose() {

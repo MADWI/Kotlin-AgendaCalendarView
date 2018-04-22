@@ -10,19 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.ognev.kotlin.agendacalendarview.calendar.weekslist.WeekListView
-        android:id="@+id/weekListView"
+    <com.ognev.kotlin.agendacalendarview.calendar.weeks.WeeksView
+        android:id="@+id/weeksView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@color/calendar_divider_color"
-        android:dividerHeight="1dp"
-        android:drawSelectorOnTop="false"
-        android:listSelector="@android:color/transparent"
-        android:overScrollMode="never"
-        android:paddingBottom="5dp"
-        android:paddingTop="6dp"
-        android:scrollbars="none"
         app:layoutManager="LinearLayoutManager" />
 
 </LinearLayout>
