@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.graphics.Typeface" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="day"
+            type="com.ognev.kotlin.agendacalendarview.models.DayItem" />
+
+        <variable
+            name="attributes"
+            type="com.ognev.kotlin.agendacalendarview.models.ViewAttributes" />
+    </data>
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/day_cell_height"
+        android:layout_weight="1"
+        android:background="@{attributes.cellDayBackgroundColor}"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:layout_width="50dp">
+
+        <TextView
+            style="@style/CalendarMonthText"
+            android:textColor="@{attributes.monthTextColor}"
+            android:visibility="@{day.date.dayOfMonth == 1 ? View.VISIBLE : View.GONE}"
+            app:monthNameOfDate="@{day.date}"
+            tools:text="jun"
+            tools:visibility="visible" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_width="@dimen/circle_selected_size"
+                android:layout_height="@dimen/circle_selected_size"
+                android:background="@{attributes.circleBackgroundColor}"
+                android:visibility="@{day.isSelected ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible" />
+
+            <TextView
+                style="@style/CalendarCellText"
+                android:layout_gravity="center"
+                android:text="@{String.valueOf(day.date.dayOfMonth)}"
+                android:textColor="@{day.isSelected ? attributes.selectedDayTextColor : attributes.cellDayTextColor}"
+                app:typeface="@{day.date.dayOfMonth == 1 ? Typeface.BOLD : Typeface.NORMAL}"
+                tools:text="20" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:eventsMarksNumber="@{day.eventsCount}"
+            app:markColor="@{attributes.cellEventMarkColor}"
+            app:showPlusThreshold="@{attributes.cellEventPlusShowThreshold}" />
+
+    </LinearLayout>
+</layout>
