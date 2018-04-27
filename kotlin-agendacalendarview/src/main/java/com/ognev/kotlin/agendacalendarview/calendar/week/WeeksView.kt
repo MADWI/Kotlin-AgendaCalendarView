@@ -4,8 +4,8 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
-import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
+import com.ognev.kotlin.agendacalendarview.bus.BusProvider
+import com.ognev.kotlin.agendacalendarview.bus.CalendarScrolled
 
 class WeeksView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 

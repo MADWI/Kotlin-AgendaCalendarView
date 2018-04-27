@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.ognev.kotlin.agendacalendarview.CalendarController
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
 import kotlinx.android.synthetic.main.activity_main.*
 import org.joda.time.LocalDate
-import java.util.Calendar
-import java.util.Locale
 
 class MainActivity : AppCompatActivity(), CalendarController {
 
-    private val locale = Locale.ENGLISH
     private val minDate = LocalDate.now().withDayOfMonth(1)
     private val maxDate = minDate.plusMonths(5)
+    private val eventsRepository = EventsRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,31 +21,11 @@ class MainActivity : AppCompatActivity(), CalendarController {
 
     private fun setupCalendar() {
         val eventRenderer = SampleEventAgendaRenderer(applicationContext)
+        val events = eventsRepository.fetchEvents()
         agenda_calendar_view.apply {
-            init(minDate, maxDate, eventRenderer, getSampleEvents())
+            init(minDate, maxDate, eventRenderer, events)
             setCallbacks(this@MainActivity)
         }
-    }
-
-    private fun getSampleEvents(): MutableList<CalendarEvent> {
-        val monthDaysNumber = LocalDate.now().dayOfMonth().maximumValue
-        val events: MutableList<CalendarEvent> = ArrayList()
-        for (monthDayNumber in 1..monthDaysNumber) {
-            val calendarEvent = getCalendarEvent(monthDayNumber)
-            events.add(calendarEvent)
-            events.add(getCalendarEvent(monthDayNumber))
-        }
-        return events
-    }
-
-    private fun getCalendarEvent(monthDay: Int): MyCalendarEvent {
-        val day = Calendar.getInstance(locale)
-        day.timeInMillis = System.currentTimeMillis()
-        day.set(Calendar.DAY_OF_MONTH, monthDay)
-        val event = SampleEvent(name = "Awesome $monthDay", description = "Event $monthDay")
-        val date = LocalDate().withDayOfMonth(monthDay)
-        val dayItem = DayItem(date)
-        return MyCalendarEvent(date, dayItem, event)
     }
 
     override fun getEmptyEventLayout() = R.layout.view_agenda_empty_event

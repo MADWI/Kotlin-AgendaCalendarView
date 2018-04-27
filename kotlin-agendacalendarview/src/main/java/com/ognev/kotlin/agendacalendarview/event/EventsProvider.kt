@@ -1,10 +1,7 @@
-package com.ognev.kotlin.agendacalendarview.utils
+package com.ognev.kotlin.agendacalendarview.event
 
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
-import org.joda.time.LocalDate
 
 class EventsProvider {
 
@@ -12,16 +9,11 @@ class EventsProvider {
         mutableListOf<CalendarEvent>().apply {
             for (week in weeks) {
                 for (dayItem in week.days) {
-                    events.filter { dayItem.date.compareTo(it.date) == 0 }
-                        .withEmpty { this.add(getEmptyCalendarEvent(dayItem)) }
+                    events.filter { dayItem.date.compareTo(it.day.date) == 0 }
+                        .withEmpty { this.add(EmptyCalendarEvent(dayItem)) }
                         .forEach { this.add(getCalendarEvent(it, dayItem)) }
                 }
             }
-        }
-
-    private fun getEmptyCalendarEvent(dayItem: DayItem) =
-        EmptyCalendarEvent(LocalDate(dayItem.date)).apply {
-            day = dayItem
         }
 
     private fun getCalendarEvent(event: CalendarEvent, dayItem: DayItem): CalendarEvent {

@@ -8,12 +8,12 @@ import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
-import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
-import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
-import com.ognev.kotlin.agendacalendarview.utils.DayClicked
+import com.ognev.kotlin.agendacalendarview.bus.AgendaListViewTouched
+import com.ognev.kotlin.agendacalendarview.bus.BusProvider
+import com.ognev.kotlin.agendacalendarview.bus.CalendarScrolled
+import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import kotlinx.android.synthetic.main.view_calendar.view.*
 import org.joda.time.LocalDate
 import rx.Subscription

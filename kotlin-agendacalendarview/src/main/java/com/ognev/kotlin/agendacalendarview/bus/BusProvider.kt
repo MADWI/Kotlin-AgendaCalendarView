@@ -1,9 +1,9 @@
-package com.ognev.kotlin.agendacalendarview.utils
+package com.ognev.kotlin.agendacalendarview.bus
 
 import rx.subjects.PublishSubject
 import rx.subjects.SerializedSubject
 
-class BusProvider {
+internal class BusProvider {
 
     private val bus = SerializedSubject<Event, Event>(PublishSubject.create())
 

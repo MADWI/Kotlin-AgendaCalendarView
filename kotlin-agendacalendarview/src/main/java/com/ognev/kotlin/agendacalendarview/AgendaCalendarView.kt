@@ -7,15 +7,15 @@ import android.view.View
 import android.widget.FrameLayout
 import com.ognev.kotlin.agendacalendarview.agenda.AgendaAdapter
 import com.ognev.kotlin.agendacalendarview.agenda.AgendaView
+import com.ognev.kotlin.agendacalendarview.bus.BusProvider
+import com.ognev.kotlin.agendacalendarview.bus.DayClicked
+import com.ognev.kotlin.agendacalendarview.bus.Event
 import com.ognev.kotlin.agendacalendarview.calendar.CalendarView
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
+import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.event.EventsProvider
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import com.ognev.kotlin.agendacalendarview.utils.AttributesProvider
-import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.DayClicked
-import com.ognev.kotlin.agendacalendarview.utils.Event
-import com.ognev.kotlin.agendacalendarview.utils.EventsProvider
-import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import org.joda.time.LocalDate
 import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
@@ -57,7 +57,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) {
         val event = agendaEvents[position]
         calendarView.scrollToDate(event)
-        calendarController?.onScrollToDate(event.date)
+        calendarController?.onScrollToDate(event.day.date)
     }
 
     fun setCallbacks(calendarController: CalendarController) {

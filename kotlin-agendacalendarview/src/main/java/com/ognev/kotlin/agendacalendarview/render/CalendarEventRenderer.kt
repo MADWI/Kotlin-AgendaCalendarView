@@ -2,7 +2,7 @@ package com.ognev.kotlin.agendacalendarview.render
 
 import android.support.annotation.LayoutRes
 import android.view.View
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import org.joda.time.LocalDate
 
 interface CalendarEventRenderer<in T : CalendarEvent> {

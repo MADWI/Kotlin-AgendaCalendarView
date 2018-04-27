@@ -1,13 +1,10 @@
-package com.ognev.kotlin.agendacalendarview.models
+package com.ognev.kotlin.agendacalendarview.event
 
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
-import org.joda.time.LocalDate
 
 interface CalendarEvent {
 
     var event: Any?
-
-    val date: LocalDate
 
     var day: DayItem
 

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
 
@@ -23,7 +23,7 @@ class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
         if (headerView == null) {
             headerView = parent.inflate(eventRenderer.getHeaderLayout())
         }
-        eventRenderer.setupHeaderItemView(headerView, getItem(position).date)
+        eventRenderer.setupHeaderItemView(headerView, getItem(position).day.date)
         return headerView
     }
 
@@ -53,7 +53,10 @@ class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
 
     private fun getEventLayout(event: CalendarEvent) = eventRenderer.getEventLayout(event.hasEvent())
 
-    private fun getEventId(position: Int) = events[position].date.toDateTimeAtStartOfDay().millis
+    private fun getEventId(position: Int): Long {
+        val date = events[position].day.date
+        return date.toDateTimeAtStartOfDay().millis
+    }
 
     private fun ViewGroup.inflate(@LayoutRes resource: Int): View =
         LayoutInflater.from(context).inflate(resource, this, false)

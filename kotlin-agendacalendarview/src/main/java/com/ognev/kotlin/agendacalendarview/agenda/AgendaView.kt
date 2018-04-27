@@ -3,11 +3,11 @@ package com.ognev.kotlin.agendacalendarview.agenda
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
-import com.ognev.kotlin.agendacalendarview.utils.BusProvider
-import com.ognev.kotlin.agendacalendarview.utils.DayClicked
-import com.ognev.kotlin.agendacalendarview.utils.Event
+import com.ognev.kotlin.agendacalendarview.bus.AgendaListViewTouched
+import com.ognev.kotlin.agendacalendarview.bus.BusProvider
+import com.ognev.kotlin.agendacalendarview.bus.DayClicked
+import com.ognev.kotlin.agendacalendarview.bus.Event
+import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import org.joda.time.LocalDate
 import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
@@ -42,7 +42,7 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
     }
 
     private fun scrollToDate(date: LocalDate) {
-        val selection = events.indexOfFirst { date.compareTo(it.date) == 0 }
+        val selection = events.indexOfFirst { date.compareTo(it.day.date) == 0 }
         post { setSelection(selection) }
     }
 }

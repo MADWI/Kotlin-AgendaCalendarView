@@ -5,8 +5,8 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.EmptyCalendarEvent
+import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
+import com.ognev.kotlin.agendacalendarview.event.EmptyCalendarEvent
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import net.danlew.android.joda.DateUtils
 import org.joda.time.LocalDate
