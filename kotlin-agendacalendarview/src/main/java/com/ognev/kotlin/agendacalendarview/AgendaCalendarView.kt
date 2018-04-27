@@ -77,7 +77,12 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaAdapter.setEventAdapter(eventRenderer)
 
         calendarView.init(weeks, viewAttributes)
+        moveToDate(LocalDate.now())
     }
+
+    fun moveToDate(date: LocalDate) =
+        agendaEvents.find { date.isEqual(it.day.date) }
+            ?.let { BusProvider.instance.send(DayClicked(it.day)) }
 
     fun dispose() {
         subscription?.unsubscribe()

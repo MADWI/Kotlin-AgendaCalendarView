@@ -5,16 +5,16 @@
     android:layout_height="match_parent">
 
     <com.ognev.kotlin.agendacalendarview.AgendaCalendarView
-        android:id="@+id/agenda_calendar_view"
+        android:id="@+id/agendaCalendarView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         agendaCalendar:calendarCurrentDayTextColor="@color/main_blue"
         agendaCalendar:calendarMonthTextColor="@color/black"
         agendaCalendar:calendarSelectedDayTextColor="@color/white"
-        agendaCalendar:cellEventMarkColor="@color/blue_selected"
-        agendaCalendar:cellEventPlusShowThreshold="1"
         agendaCalendar:cellDayBackgroundColor="@android:color/white"
         agendaCalendar:cellDayTextColor="@android:color/black"
+        agendaCalendar:cellEventMarkColor="@color/blue_selected"
+        agendaCalendar:cellEventPlusShowThreshold="1"
         agendaCalendar:circleBackgroundColor="@drawable/selected_day_background"
         agendaCalendar:daysNamesHeaderColor="@android:color/white"
         agendaCalendar:daysNamesTextColor="@android:color/black" />

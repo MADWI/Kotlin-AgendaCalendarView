@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview.sample
+package com.ognev.kotlin.agendacalendarview.sample.event
 
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
