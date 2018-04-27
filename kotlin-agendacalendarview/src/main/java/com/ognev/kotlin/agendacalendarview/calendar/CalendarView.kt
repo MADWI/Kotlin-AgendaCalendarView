@@ -9,7 +9,7 @@ import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
+import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.bus.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.CalendarScrolled

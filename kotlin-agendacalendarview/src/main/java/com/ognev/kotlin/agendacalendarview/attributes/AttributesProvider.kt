@@ -1,12 +1,23 @@
-package com.ognev.kotlin.agendacalendarview.utils
+package com.ognev.kotlin.agendacalendarview.attributes
 
 import android.content.Context
 import android.support.annotation.ColorRes
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
-import com.ognev.kotlin.agendacalendarview.R.color.*
-import com.ognev.kotlin.agendacalendarview.R.styleable.*
-import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
+import com.ognev.kotlin.agendacalendarview.R.color.azure
+import com.ognev.kotlin.agendacalendarview.R.color.calendar_text_current_day
+import com.ognev.kotlin.agendacalendarview.R.color.theme_text_icons
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarCurrentDayTextColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarMonthTextColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarSelectedDayTextColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellDayBackgroundColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellDayTextColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellEventMarkColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellEventPlusShowThreshold
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_circleBackgroundColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_daysNamesHeaderColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_daysNamesTextColor
 
 class AttributesProvider {
 

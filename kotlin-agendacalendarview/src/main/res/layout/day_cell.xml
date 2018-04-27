@@ -14,7 +14,7 @@
 
         <variable
             name="attributes"
-            type="com.ognev.kotlin.agendacalendarview.models.ViewAttributes" />
+            type="com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes" />
     </data>
 
     <LinearLayout xmlns:tools="http://schemas.android.com/tools"

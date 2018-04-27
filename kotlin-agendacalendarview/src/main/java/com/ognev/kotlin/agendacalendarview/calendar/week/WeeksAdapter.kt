@@ -11,7 +11,7 @@ import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.databinding.DayCellBinding
-import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
+import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
 
 class WeeksAdapter(val viewAttributes: ViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {

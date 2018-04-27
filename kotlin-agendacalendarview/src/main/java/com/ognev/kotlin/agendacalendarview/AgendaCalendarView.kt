@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.ognev.kotlin.agendacalendarview.agenda.AgendaAdapter
 import com.ognev.kotlin.agendacalendarview.agenda.AgendaView
+import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.bus.Event
@@ -15,7 +16,6 @@ import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.event.EventsProvider
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
-import com.ognev.kotlin.agendacalendarview.utils.AttributesProvider
 import org.joda.time.LocalDate
 import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
