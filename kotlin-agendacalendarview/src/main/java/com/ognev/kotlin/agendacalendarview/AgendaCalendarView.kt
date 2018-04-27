@@ -15,7 +15,7 @@ import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 import com.ognev.kotlin.agendacalendarview.utils.Event
 import com.ognev.kotlin.agendacalendarview.utils.EventsProvider
-import com.ognev.kotlin.agendacalendarview.utils.WeeksProvider
+import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import org.joda.time.LocalDate
 import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView

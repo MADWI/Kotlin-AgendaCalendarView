@@ -3,8 +3,8 @@ package com.ognev.kotlin.agendacalendarview.sample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.ognev.kotlin.agendacalendarview.CalendarController
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.DayItem
 import kotlinx.android.synthetic.main.activity_main.*
 import org.joda.time.LocalDate
 import java.util.Calendar

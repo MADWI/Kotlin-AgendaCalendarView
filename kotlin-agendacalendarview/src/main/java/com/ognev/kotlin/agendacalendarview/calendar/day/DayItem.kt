@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview.models
+package com.ognev.kotlin.agendacalendarview.calendar.day
 
 import org.joda.time.LocalDate
 

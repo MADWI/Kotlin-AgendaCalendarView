@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview.calendar
+package com.ognev.kotlin.agendacalendarview.calendar.day
 
 import android.content.Context
 import android.support.annotation.ColorInt

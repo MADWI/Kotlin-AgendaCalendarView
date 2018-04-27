@@ -1,5 +1,6 @@
 package com.ognev.kotlin.agendacalendarview.models
 
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import org.joda.time.LocalDate
 
 interface CalendarEvent {
@@ -8,7 +9,7 @@ interface CalendarEvent {
 
     val date: LocalDate
 
-    var dayReference: DayItem
+    var day: DayItem
 
     fun hasEvent() = event != null
 }

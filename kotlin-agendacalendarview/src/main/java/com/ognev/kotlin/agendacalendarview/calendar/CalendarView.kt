@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.calendar.weeks.WeeksAdapter
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
+import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
 import com.ognev.kotlin.agendacalendarview.models.CalendarEvent
-import com.ognev.kotlin.agendacalendarview.models.DayItem
 import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
-import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.CalendarScrolled
@@ -52,7 +52,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
         val today = LocalDate.now()
-        val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.firstDay) }
+        val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.days[0].date) }
         weeksView.scrollToPosition(weekIndex)
     }
 
@@ -74,7 +74,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     private fun updateSelectedDay(dayItem: DayItem) {
         updateSelection(dayItem)
-        val dayWeekIndex = weeks.indexOfFirst { it.firstDay.isSameWeek(dayItem.date) }
+        val dayWeekIndex = weeks.indexOfFirst { it.days[0].date.isSameWeek(dayItem.date) }
         if (dayWeekIndex != -1) {
             if (dayWeekIndex != currentWeekIndex) {
                 weeksAdapter.notifyItemChanged(currentWeekIndex)
@@ -93,7 +93,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
     }
 
     fun scrollToDate(calendarEvent: CalendarEvent) {
-        updateSelectedDay(calendarEvent.dayReference)
+        updateSelectedDay(calendarEvent.day)
         weeksView.scrollToPosition(currentWeekIndex)
     }
 

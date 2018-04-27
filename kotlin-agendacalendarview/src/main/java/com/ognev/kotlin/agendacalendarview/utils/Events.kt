@@ -1,6 +1,6 @@
 package com.ognev.kotlin.agendacalendarview.utils
 
-import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 
 /**
  * Events emitted by the bus provider.

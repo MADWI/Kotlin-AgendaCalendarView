@@ -1,6 +1,6 @@
 package com.ognev.kotlin.agendacalendarview
 
-import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import org.joda.time.LocalDate
 
 interface CalendarController {

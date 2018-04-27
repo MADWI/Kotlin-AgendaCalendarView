@@ -1,7 +1,6 @@
-package com.ognev.kotlin.agendacalendarview.utils
+package com.ognev.kotlin.agendacalendarview.calendar.week
 
-import com.ognev.kotlin.agendacalendarview.models.DayItem
-import com.ognev.kotlin.agendacalendarview.models.WeekItem
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import org.joda.time.LocalDate
 import org.joda.time.Weeks
 
@@ -15,7 +14,7 @@ class WeeksProvider {
         for (i in 0..weeksBetween) {
             val weekFirstDate = startDate.plusWeeks(i)
             val dayItems = getDayItems(weekFirstDate)
-            val weekItem = WeekItem(weekFirstDate, dayItems)
+            val weekItem = WeekItem(dayItems)
             weeks.add(weekItem)
         }
         return weeks
@@ -24,7 +23,8 @@ class WeeksProvider {
     private fun getDayItems(weekFirstDay: LocalDate): List<DayItem> {
         val dayItems = mutableListOf<DayItem>()
         for (i in 0 until 7) {
-            val dayItem = DayItem(weekFirstDay.plusDays(i))
+            val dayItem =
+                DayItem(weekFirstDay.plusDays(i))
             dayItems.add(dayItem)
         }
         return dayItems

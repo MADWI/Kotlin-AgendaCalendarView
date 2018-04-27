@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview.calendar.weeks
+package com.ognev.kotlin.agendacalendarview.calendar.week
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView

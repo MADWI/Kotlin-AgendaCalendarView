@@ -1,4 +1,4 @@
-package com.ognev.kotlin.agendacalendarview.calendar.weeks
+package com.ognev.kotlin.agendacalendarview.calendar.week
 
 import android.databinding.DataBindingUtil
 import android.support.annotation.LayoutRes
@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.databinding.ViewDayCellBinding
-import com.ognev.kotlin.agendacalendarview.models.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
+import com.ognev.kotlin.agendacalendarview.databinding.DayCellBinding
 import com.ognev.kotlin.agendacalendarview.models.ViewAttributes
-import com.ognev.kotlin.agendacalendarview.models.WeekItem
 import com.ognev.kotlin.agendacalendarview.utils.BusProvider
 import com.ognev.kotlin.agendacalendarview.utils.DayClicked
 
@@ -39,12 +38,12 @@ class WeeksAdapter(val viewAttributes: ViewAttributes)
 
         fun bind(weekItem: WeekItem) {
             (itemView as ViewGroup).applyForChildren { child: View, index: Int ->
-                setupChild(child, weekItem.dayItems[index])
+                setupChild(child, weekItem.days[index])
             }
         }
 
         private fun setupChild(child: View, dayItem: DayItem) {
-            DataBindingUtil.bind<ViewDayCellBinding>(child)?.apply {
+            DataBindingUtil.bind<DayCellBinding>(child)?.apply {
                 day = dayItem
                 attributes = viewAttributes
             }

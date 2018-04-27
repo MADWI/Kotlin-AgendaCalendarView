@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.ognev.kotlin.agendacalendarview.calendar.DaysNamesHeaderView
+    <com.ognev.kotlin.agendacalendarview.calendar.day.DaysNamesHeaderView
         android:id="@+id/daysNamesHeaderView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.ognev.kotlin.agendacalendarview.calendar.weeks.WeeksView
+    <com.ognev.kotlin.agendacalendarview.calendar.week.WeeksView
         android:id="@+id/weeksView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
