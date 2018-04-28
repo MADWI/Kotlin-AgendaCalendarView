@@ -15,7 +15,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
  */
 class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
 
-    private lateinit var eventRenderer: CalendarEventRenderer<CalendarEvent>
+    lateinit var eventRenderer: CalendarEventRenderer<CalendarEvent>
     private val events: MutableList<CalendarEvent> = mutableListOf()
 
     override fun getHeaderView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -40,10 +40,6 @@ class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
         val view = parent.inflate(getEventLayout(event))
         eventRenderer.setupEventItemView(view, event, position)
         return view
-    }
-
-    fun setEventAdapter(eventRenderer: CalendarEventRenderer<CalendarEvent>) {
-        this.eventRenderer = eventRenderer
     }
 
     fun setEvents(events: List<CalendarEvent>) {

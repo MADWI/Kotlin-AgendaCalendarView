@@ -5,15 +5,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.ognev.kotlin.agendacalendarview.R
-import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
-import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
-import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
-import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.bus.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.CalendarScrolled
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
+import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
 import kotlinx.android.synthetic.main.view_calendar.view.*
 import org.joda.time.LocalDate
 import rx.Subscription
@@ -92,8 +91,8 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         }
     }
 
-    fun scrollToDate(calendarEvent: CalendarEvent) {
-        updateSelectedDay(calendarEvent.day)
+    fun scrollToDay(day: DayItem) {
+        updateSelectedDay(day)
         weeksView.scrollToPosition(currentWeekIndex)
     }
 

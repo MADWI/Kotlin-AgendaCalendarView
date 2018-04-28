@@ -3,9 +3,7 @@ package com.ognev.kotlin.agendacalendarview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
-import com.ognev.kotlin.agendacalendarview.agenda.AgendaAdapter
 import com.ognev.kotlin.agendacalendarview.agenda.AgendaView
 import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
@@ -18,13 +16,11 @@ import com.ognev.kotlin.agendacalendarview.event.EventsProvider
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import org.joda.time.LocalDate
 import rx.Subscription
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 
 /**
  * View holding the agenda and calendar view together.
  */
-class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs),
-    StickyListHeadersListView.OnStickyHeaderChangedListener {
+class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     private val weeksProvider = WeeksProvider()
     private val eventsProvider = EventsProvider()
@@ -45,6 +41,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaView = findViewById(R.id.agenda_view)
         subscription = BusProvider.instance.toObservable()
             .subscribe { handleEvent(it) }
+        setupOnDayChangeListener()
     }
 
     private fun handleEvent(event: Event) {
@@ -53,11 +50,11 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         }
     }
 
-    override
-    fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) {
-        val event = agendaEvents[position]
-        calendarView.scrollToDate(event)
-        calendarController?.onScrollToDate(event.day.date)
+    private fun setupOnDayChangeListener() {
+        agendaView.onDayChangeListener = {
+            calendarView.scrollToDay(it)
+            calendarController?.onScrollToDate(it.date)
+        }
     }
 
     fun setCallbacks(calendarController: CalendarController) {
@@ -67,15 +64,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
         val weeks = weeksProvider.getWeeksBetweenDates(minDate, maxDate)
         this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
-
-        val agendaAdapter = AgendaAdapter()
-        agendaView.events = agendaEvents
-        agendaView.adapter = agendaAdapter
-        agendaView.setOnStickyHeaderChangedListener(this)
-
-        agendaAdapter.setEvents(agendaEvents)
-        agendaAdapter.setEventAdapter(eventRenderer)
-
+        agendaView.init(agendaEvents, eventRenderer)
         calendarView.init(weeks, viewAttributes)
         moveToDate(LocalDate.now())
     }
