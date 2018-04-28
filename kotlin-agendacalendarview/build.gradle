@@ -11,11 +11,6 @@ ext {
 
 android {
     compileSdkVersion 27
-
-    lintOptions {
-        abortOnError false
-    }
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
@@ -40,16 +35,13 @@ ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api 'net.danlew:android.joda:2.9.9.3'
-    api 'se.emilsjolander:stickylistheaders:2.7.0'
+    implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:design:$support_version"
     implementation 'io.reactivex:rxjava:1.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    kapt "com.android.databinding:compiler:3.1.1"
-}
-repositories {
-    mavenCentral()
+    kapt "com.android.databinding:compiler:$gradle_plugin_version"
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

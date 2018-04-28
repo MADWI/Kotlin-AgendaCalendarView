@@ -18,10 +18,13 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListView(context, attrs),
     StickyListHeadersListView.OnStickyHeaderChangedListener {
 
-    lateinit var events: List<CalendarEvent>
     lateinit var onDayChangeListener: (day: DayItem) -> Unit
-    private val agendaAdapter = AgendaAdapter()
+    private lateinit var events: List<CalendarEvent>
     private var subscription: Subscription? = null
+
+    init {
+        setOnStickyHeaderChangedListener(this)
+    }
 
     override
     fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) =
@@ -33,15 +36,12 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
             .subscribe { event -> handleEvent(event) }
     }
 
-    init {
-        setOnStickyHeaderChangedListener(this)
-        this.adapter = agendaAdapter
-    }
-
     fun init(events: List<CalendarEvent>, eventRenderer: CalendarEventRenderer<CalendarEvent>) {
         this.events = events
+        val agendaAdapter = AgendaAdapter()
         agendaAdapter.eventRenderer = eventRenderer
         agendaAdapter.setEvents(events)
+        adapter = agendaAdapter
     }
 
     override
