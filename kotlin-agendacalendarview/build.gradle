@@ -34,7 +34,7 @@ ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'net.danlew:android.joda:2.9.9.3'
+    api 'net.danlew:android.joda:2.9.9'
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
