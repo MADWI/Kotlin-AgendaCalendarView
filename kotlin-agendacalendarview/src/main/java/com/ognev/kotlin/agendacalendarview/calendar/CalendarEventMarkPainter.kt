@@ -2,11 +2,10 @@ package com.ognev.kotlin.agendacalendarview.calendar
 
 import android.graphics.PorterDuff
 import android.support.annotation.ColorInt
-import android.support.annotation.LayoutRes
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.ognev.kotlin.agendacalendarview.R
+import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 
 class CalendarEventMarkPainter {
 
@@ -25,17 +24,14 @@ class CalendarEventMarkPainter {
     }
 
     private fun addEventDotIcon(viewGroup: ViewGroup, @ColorInt iconColor: Int) {
-        val dotView = viewGroup.inflate(R.layout.event_dot)
+        val dotView = viewGroup.inflateWithAttach(R.layout.event_dot, false)
         dotView.background.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)
         viewGroup.addView(dotView)
     }
 
     private fun addEventPlusIcon(viewGroup: ViewGroup, @ColorInt iconColor: Int) {
-        val plusView = viewGroup.inflate(R.layout.event_plus) as ImageView
+        val plusView = viewGroup.inflateWithAttach(R.layout.event_plus, false) as ImageView
         plusView.setColorFilter(iconColor)
         viewGroup.addView(plusView)
     }
-
-    private fun ViewGroup.inflate(@LayoutRes resource: Int) =
-        LayoutInflater.from(context).inflate(resource, this, false)
 }

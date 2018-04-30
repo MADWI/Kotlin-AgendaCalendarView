@@ -2,7 +2,6 @@ package com.ognev.kotlin.agendacalendarview.calendar
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
@@ -13,6 +12,7 @@ import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
+import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 import kotlinx.android.synthetic.main.view_calendar.view.*
 import org.joda.time.LocalDate
 import rx.Subscription
@@ -31,7 +31,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
     private val calendarAnimator = CalendarAnimator(this)
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_calendar, this, true)
+        inflateWithAttach(R.layout.view_calendar, true)
         orientation = VERTICAL
     }
 

@@ -1,17 +1,16 @@
 package com.ognev.kotlin.agendacalendarview.calendar.week
 
 import android.databinding.DataBindingUtil
-import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ognev.kotlin.agendacalendarview.R
+import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.databinding.DayCellBinding
-import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
+import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 
 class WeeksAdapter(val viewAttributes: ViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
@@ -28,7 +27,7 @@ class WeeksAdapter(val viewAttributes: ViewAttributes)
 
     override
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        WeekViewHolder(parent.inflate(R.layout.week))
+        WeekViewHolder(parent.inflateWithAttach(R.layout.week, false))
 
     override
     fun onBindViewHolder(weekViewHolder: WeekViewHolder, position: Int) =
@@ -56,8 +55,5 @@ class WeeksAdapter(val viewAttributes: ViewAttributes)
             action(getChildAt(i), i)
         }
     }
-
-    private fun ViewGroup.inflate(@LayoutRes layoutRes: Int) =
-        LayoutInflater.from(this.context).inflate(layoutRes, this, false)
 }
 

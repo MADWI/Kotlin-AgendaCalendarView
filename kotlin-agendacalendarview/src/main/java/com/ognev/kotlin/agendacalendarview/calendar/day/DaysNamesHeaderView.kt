@@ -3,10 +3,10 @@ package com.ognev.kotlin.agendacalendarview.calendar.day
 import android.content.Context
 import android.support.annotation.ColorInt
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ognev.kotlin.agendacalendarview.R
+import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 import kotlinx.android.synthetic.main.days_names_header.view.*
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -19,7 +19,7 @@ class DaysNamesHeaderView(context: Context, attrs: AttributeSet) : LinearLayout(
     private val dayNameFormatter: DateTimeFormatter = DateTimeFormat.forPattern(dayNamePattern)
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.days_names_header, this, true)
+        inflateWithAttach(R.layout.days_names_header, true)
         applyForChildren { dayView, index -> dayView.text = getNameForDay(index) }
     }
 

@@ -2,7 +2,6 @@ package com.ognev.kotlin.agendacalendarview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
@@ -13,6 +12,7 @@ import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.event.EventsProvider
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
+import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 import kotlinx.android.synthetic.main.agenda_calendar.view.*
 import org.joda.time.LocalDate
 import rx.Subscription
@@ -30,7 +30,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private var onDayChangedListener: ((DayItem) -> Unit)? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.agenda_calendar, this, true)
+        inflateWithAttach(R.layout.agenda_calendar, true)
         calendarView.setBackgroundColor(viewAttributes.calendarColor)
         subscribeOnEvents()
         setupAgendaOnDayChangedListener()
