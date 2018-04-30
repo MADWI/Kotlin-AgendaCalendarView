@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.ognev.kotlin.agendacalendarview.calendar.CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/calendar_two_rows_height" />
-
-    <com.ognev.kotlin.agendacalendarview.agenda.AgendaView
-        android:id="@+id/agendaView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animationCache="false"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:scrollingCache="false" />
+        android:orientation="vertical">
 
-</LinearLayout>
+        <com.ognev.kotlin.agendacalendarview.calendar.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/calendar_two_rows_height" />
+
+        <com.ognev.kotlin.agendacalendarview.agenda.AgendaView
+            android:id="@+id/agendaView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animationCache="false"
+            android:scrollbars="none"
+            android:scrollingCache="false" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/calendarToggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_expand_white_24dp"
+        app:layout_anchor="@id/calendarView"
+        app:layout_anchorGravity="bottom|end"
+        app:useCompatPadding="true" />
+
+</android.support.design.widget.CoordinatorLayout>

@@ -2,9 +2,7 @@ package com.ognev.kotlin.agendacalendarview.agenda
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
-import com.ognev.kotlin.agendacalendarview.bus.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.bus.Event
@@ -42,14 +40,6 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
         agendaAdapter.eventRenderer = eventRenderer
         agendaAdapter.setEvents(events)
         adapter = agendaAdapter
-    }
-
-    override
-    fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_MOVE) {
-            BusProvider.instance.send(AgendaListViewTouched())
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     fun dispose() = subscription?.unsubscribe()

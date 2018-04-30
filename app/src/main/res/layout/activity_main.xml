@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ognev.kotlin.agendacalendarview.AgendaCalendarView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:agendaCalendar="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/agendaCalendarView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.ognev.kotlin.agendacalendarview.AgendaCalendarView
-        android:id="@+id/agendaCalendarView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        agendaCalendar:calendarColor="@color/colorPrimary"
-        agendaCalendar:calendarCurrentDayTextColor="@color/main_blue"
-        agendaCalendar:calendarMonthTextColor="@color/white"
-        agendaCalendar:calendarSelectedDayTextColor="@color/white"
-        agendaCalendar:cellDayTextColor="@color/white"
-        agendaCalendar:cellEventMarkColor="@color/white"
-        agendaCalendar:cellEventPlusShowThreshold="1"
-        agendaCalendar:selectedDayBackground="@drawable/selected_day_background"
-        agendaCalendar:daysNamesHeaderColor="@color/colorPrimary"
-        agendaCalendar:daysNamesTextColor="@color/white" />
-
-</LinearLayout>
+    android:layout_height="match_parent"
+    agendaCalendar:calendarColor="@color/colorPrimary"
+    agendaCalendar:calendarCurrentDayTextColor="@color/main_blue"
+    agendaCalendar:calendarMonthTextColor="@color/white"
+    agendaCalendar:calendarSelectedDayTextColor="@color/white"
+    agendaCalendar:cellDayTextColor="@color/white"
+    agendaCalendar:cellEventMarkColor="@color/white"
+    agendaCalendar:cellEventPlusShowThreshold="1"
+    agendaCalendar:daysNamesHeaderColor="@color/colorPrimary"
+    agendaCalendar:daysNamesTextColor="@color/white"
+    agendaCalendar:selectedDayBackground="@drawable/selected_day_background" />

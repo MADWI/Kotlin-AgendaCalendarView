@@ -5,9 +5,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
-import com.ognev.kotlin.agendacalendarview.bus.AgendaListViewTouched
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
-import com.ognev.kotlin.agendacalendarview.bus.CalendarScrolled
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
@@ -28,7 +26,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
     private lateinit var weeks: List<WeekItem>
     private var currentWeekIndex = 0
     private var subscription: Subscription? = null
-    private val calendarAnimator = CalendarAnimator(this)
 
     init {
         inflateWithAttach(R.layout.view_calendar, true)
@@ -58,12 +55,8 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     private fun subscribeOnEvents() {
         subscription = BusProvider.instance.toObservable()
-            .subscribe { event ->
-                when (event) {
-                    is CalendarScrolled -> calendarAnimator.expandView()
-                    is AgendaListViewTouched -> calendarAnimator.collapseView()
-                    is DayClicked -> updateSelectedDay(event.day)
-                }
+            .subscribe {
+                if (it is DayClicked) updateSelectedDay(it.day)
             }
     }
 
@@ -94,7 +87,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     fun dispose() {
         subscription?.unsubscribe()
-        calendarAnimator.dispose()
     }
 
     private fun LocalDate.isSameWeek(date: LocalDate): Boolean {

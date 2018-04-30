@@ -7,8 +7,4 @@ import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
  */
 internal sealed class Event
 
-internal class CalendarScrolled : Event()
-
-internal class AgendaListViewTouched : Event()
-
 internal class DayClicked(val day: DayItem) : Event()

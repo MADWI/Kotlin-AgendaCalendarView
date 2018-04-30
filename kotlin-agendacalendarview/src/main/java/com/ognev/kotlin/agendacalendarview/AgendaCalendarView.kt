@@ -7,6 +7,7 @@ import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.bus.Event
+import com.ognev.kotlin.agendacalendarview.calendar.CalendarAnimator
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
@@ -28,12 +29,15 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private lateinit var agendaEvents: MutableList<CalendarEvent>
     private var subscription: Subscription? = null
     private var onDayChangedListener: ((DayItem) -> Unit)? = null
+    private val calendarAnimator: CalendarAnimator by lazy { CalendarAnimator(calendarView) }
+    private var isCollapsed = true
 
     init {
         inflateWithAttach(R.layout.agenda_calendar, true)
         calendarView.setBackgroundColor(viewAttributes.calendarColor)
         subscribeOnEvents()
         setupAgendaOnDayChangedListener()
+        setupCalendarToggleButtonClickListener()
     }
 
     private fun subscribeOnEvents() {
@@ -51,6 +55,18 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaView.onDayChangedListener = {
             calendarView.scrollToDay(it)
             onDayChangedListener?.invoke(it)
+        }
+    }
+
+    private fun setupCalendarToggleButtonClickListener() {
+        calendarToggleButton.setOnClickListener {
+            if (isCollapsed) {
+                calendarAnimator.expandView()
+                isCollapsed = false
+            } else {
+                isCollapsed = true
+                calendarAnimator.collapseView()
+            }
         }
     }
 
@@ -73,6 +89,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     fun dispose() {
         subscription?.unsubscribe()
         calendarView.dispose()
+        calendarAnimator.dispose()
         agendaView.dispose()
     }
 }
