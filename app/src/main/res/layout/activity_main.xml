@@ -13,9 +13,9 @@
         agendaCalendar:calendarMonthTextColor="@color/white"
         agendaCalendar:calendarSelectedDayTextColor="@color/white"
         agendaCalendar:cellDayTextColor="@color/white"
-        agendaCalendar:cellEventMarkColor="@color/blue_selected"
+        agendaCalendar:cellEventMarkColor="@color/white"
         agendaCalendar:cellEventPlusShowThreshold="1"
-        agendaCalendar:circleBackgroundColor="@drawable/selected_day_background"
+        agendaCalendar:selectedDayBackground="@drawable/selected_day_background"
         agendaCalendar:daysNamesHeaderColor="@color/colorPrimary"
         agendaCalendar:daysNamesTextColor="@color/white" />
 

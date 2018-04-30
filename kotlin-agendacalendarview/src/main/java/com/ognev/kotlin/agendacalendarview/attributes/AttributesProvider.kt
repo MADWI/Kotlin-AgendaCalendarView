@@ -15,25 +15,25 @@ import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calend
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellDayTextColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellEventMarkColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellEventPlusShowThreshold
-import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_circleBackgroundColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_daysNamesHeaderColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_daysNamesTextColor
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_selectedDayBackground
 
 class AttributesProvider {
 
     fun getAttributes(context: Context, attributeSet: AttributeSet): ViewAttributes {
         val attrs = context.obtainStyledAttributes(attributeSet, AgendaCalendarView, 0, 0)
         return ViewAttributes(
-            daysNamesHeaderColor = attrs.getColor(AgendaCalendarView_daysNamesHeaderColor, getColor(context, android.R.color.white)),
-            daysNamesTextColor = attrs.getColor(AgendaCalendarView_daysNamesTextColor, getColor(context, android.R.color.black)),
-            monthTextColor = attrs.getColor(AgendaCalendarView_calendarMonthTextColor, getColor(context, theme_text_icons)),
-            selectedDayTextColor = attrs.getColor(AgendaCalendarView_calendarSelectedDayTextColor, getColor(context, theme_text_icons)),
-            currentDayTextColor = attrs.getColor(AgendaCalendarView_calendarCurrentDayTextColor, getColor(context, calendar_text_current_day)),
-            circleBackgroundColor = attrs.getDrawable(AgendaCalendarView_circleBackgroundColor),
             calendarColor = attrs.getColor(AgendaCalendarView_calendarColor, getColor(context, android.R.color.white)),
             cellDayTextColor = attrs.getColor(AgendaCalendarView_cellDayTextColor, getColor(context, android.R.color.white)),
             cellEventMarkColor = attrs.getColor(AgendaCalendarView_cellEventMarkColor, getColor(context, azure)),
-            cellEventPlusShowThreshold = attrs.getColor(AgendaCalendarView_cellEventPlusShowThreshold, 4)
+            cellEventPlusShowThreshold = attrs.getColor(AgendaCalendarView_cellEventPlusShowThreshold, 4),
+            daysNamesTextColor = attrs.getColor(AgendaCalendarView_daysNamesTextColor, getColor(context, android.R.color.black)),
+            daysNamesHeaderColor = attrs.getColor(AgendaCalendarView_daysNamesHeaderColor, getColor(context, android.R.color.white)),
+            monthTextColor = attrs.getColor(AgendaCalendarView_calendarMonthTextColor, getColor(context, theme_text_icons)),
+            currentDayTextColor = attrs.getColor(AgendaCalendarView_calendarCurrentDayTextColor, getColor(context, calendar_text_current_day)),
+            selectedDayTextColor = attrs.getColor(AgendaCalendarView_calendarSelectedDayTextColor, getColor(context, theme_text_icons)),
+            selectedDayBackground = attrs.getDrawable(AgendaCalendarView_selectedDayBackground)
         ).also { attrs.recycle() }
     }
 

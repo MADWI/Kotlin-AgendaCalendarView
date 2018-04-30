@@ -40,7 +40,7 @@
             <View
                 android:layout_width="@dimen/circle_selected_size"
                 android:layout_height="@dimen/circle_selected_size"
-                android:background="@{attributes.circleBackgroundColor}"
+                android:background="@{attributes.selectedDayBackground}"
                 android:visibility="@{day.isSelected ? View.VISIBLE : View.GONE}"
                 tools:visibility="visible" />
 

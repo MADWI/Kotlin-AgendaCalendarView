@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<declare-styleable name="AgendaCalendarView">
-		<attr name="daysNamesHeaderColor" format="color"/>
-		<attr name="daysNamesTextColor" format="color"/>
-		<attr name="calendarColor" format="color"/>
-		<attr name="calendarSelectedDayTextColor" format="color"/>
-		<attr name="calendarMonthTextColor" format="color"/>
-		<attr name="circleBackgroundColor" format="color"/>
-		<attr name="calendarCurrentDayTextColor" format="color"/>
-		<attr name="cellDayTextColor" format="color"/>
-		<attr name="cellEventMarkColor" format="color"/>
-		<attr name="cellEventPlusShowThreshold" format="integer"/>
-	</declare-styleable>
+    <declare-styleable name="AgendaCalendarView">
+        <attr name="daysNamesHeaderColor" format="color" />
+        <attr name="daysNamesTextColor" format="color" />
+        <attr name="calendarColor" format="color" />
+        <attr name="calendarSelectedDayTextColor" format="color" />
+        <attr name="calendarMonthTextColor" format="color" />
+        <attr name="selectedDayBackground" format="color" />
+        <attr name="calendarCurrentDayTextColor" format="color" />
+        <attr name="cellDayTextColor" format="color" />
+        <attr name="cellEventMarkColor" format="color" />
+        <attr name="cellEventPlusShowThreshold" format="integer" />
+    </declare-styleable>
 </resources>
