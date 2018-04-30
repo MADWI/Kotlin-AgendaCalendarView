@@ -4,17 +4,16 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.ognev.kotlin.agendacalendarview.agenda.AgendaView
 import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.bus.Event
-import com.ognev.kotlin.agendacalendarview.calendar.CalendarView
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.event.EventsProvider
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
+import kotlinx.android.synthetic.main.agenda_calendar.view.*
 import org.joda.time.LocalDate
 import rx.Subscription
 
@@ -26,23 +25,20 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private val weeksProvider = WeeksProvider()
     private val eventsProvider = EventsProvider()
     private val viewAttributes = AttributesProvider().getAttributes(context, attrs)
-    private lateinit var agendaView: AgendaView
-    private lateinit var calendarView: CalendarView
     private lateinit var agendaEvents: MutableList<CalendarEvent>
     private var subscription: Subscription? = null
     private var onDayChangedListener: ((DayItem) -> Unit)? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_agendacalendar, this, true)
+        LayoutInflater.from(context).inflate(R.layout.agenda_calendar, this, true)
+        calendarView.setBackgroundColor(viewAttributes.calendarColor)
+        subscribeOnEvents()
+        setupAgendaOnDayChangedListener()
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        calendarView = findViewById(R.id.calendar_view)
-        agendaView = findViewById(R.id.agenda_view)
+    private fun subscribeOnEvents() {
         subscription = BusProvider.instance.toObservable()
             .subscribe { handleEvent(it) }
-        setupAgendaOnDayChangedListener()
     }
 
     private fun handleEvent(event: Event) {

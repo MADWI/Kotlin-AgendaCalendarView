@@ -21,7 +21,6 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/day_cell_height"
         android:layout_weight="1"
-        android:background="@{attributes.cellDayBackgroundColor}"
         android:gravity="center"
         android:orientation="vertical"
         tools:layout_width="50dp">

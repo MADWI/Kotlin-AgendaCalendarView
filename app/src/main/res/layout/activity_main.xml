@@ -8,15 +8,15 @@
         android:id="@+id/agendaCalendarView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        agendaCalendar:calendarColor="@color/colorPrimary"
         agendaCalendar:calendarCurrentDayTextColor="@color/main_blue"
-        agendaCalendar:calendarMonthTextColor="@color/black"
+        agendaCalendar:calendarMonthTextColor="@color/white"
         agendaCalendar:calendarSelectedDayTextColor="@color/white"
-        agendaCalendar:cellDayBackgroundColor="@android:color/white"
-        agendaCalendar:cellDayTextColor="@android:color/black"
+        agendaCalendar:cellDayTextColor="@color/white"
         agendaCalendar:cellEventMarkColor="@color/blue_selected"
         agendaCalendar:cellEventPlusShowThreshold="1"
         agendaCalendar:circleBackgroundColor="@drawable/selected_day_background"
-        agendaCalendar:daysNamesHeaderColor="@android:color/white"
-        agendaCalendar:daysNamesTextColor="@android:color/black" />
+        agendaCalendar:daysNamesHeaderColor="@color/colorPrimary"
+        agendaCalendar:daysNamesTextColor="@color/white" />
 
 </LinearLayout>

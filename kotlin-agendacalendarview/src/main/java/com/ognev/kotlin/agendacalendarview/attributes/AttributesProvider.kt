@@ -8,10 +8,10 @@ import com.ognev.kotlin.agendacalendarview.R.color.azure
 import com.ognev.kotlin.agendacalendarview.R.color.calendar_text_current_day
 import com.ognev.kotlin.agendacalendarview.R.color.theme_text_icons
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView
+import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarCurrentDayTextColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarMonthTextColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_calendarSelectedDayTextColor
-import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellDayBackgroundColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellDayTextColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellEventMarkColor
 import com.ognev.kotlin.agendacalendarview.R.styleable.AgendaCalendarView_cellEventPlusShowThreshold
@@ -30,7 +30,7 @@ class AttributesProvider {
             selectedDayTextColor = attrs.getColor(AgendaCalendarView_calendarSelectedDayTextColor, getColor(context, theme_text_icons)),
             currentDayTextColor = attrs.getColor(AgendaCalendarView_calendarCurrentDayTextColor, getColor(context, calendar_text_current_day)),
             circleBackgroundColor = attrs.getDrawable(AgendaCalendarView_circleBackgroundColor),
-            cellDayBackgroundColor = attrs.getColor(AgendaCalendarView_cellDayBackgroundColor, getColor(context, android.R.color.white)),
+            calendarColor = attrs.getColor(AgendaCalendarView_calendarColor, getColor(context, android.R.color.white)),
             cellDayTextColor = attrs.getColor(AgendaCalendarView_cellDayTextColor, getColor(context, android.R.color.white)),
             cellEventMarkColor = attrs.getColor(AgendaCalendarView_cellEventMarkColor, getColor(context, azure)),
             cellEventPlusShowThreshold = attrs.getColor(AgendaCalendarView_cellEventPlusShowThreshold, 4)

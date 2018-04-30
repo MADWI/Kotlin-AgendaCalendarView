@@ -5,12 +5,12 @@
     android:orientation="vertical">
 
     <com.ognev.kotlin.agendacalendarview.calendar.CalendarView
-        android:id="@+id/calendar_view"
+        android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/calendar_two_rows_height" />
 
     <com.ognev.kotlin.agendacalendarview.agenda.AgendaView
-        android:id="@+id/agenda_view"
+        android:id="@+id/agendaView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animationCache="false"
