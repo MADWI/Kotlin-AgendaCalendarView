@@ -41,6 +41,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         daysNamesHeaderView.setTextColor(viewAttributes.daysNamesTextColor)
         setupAdapter(weeks, viewAttributes)
         scrollToCurrentWeek(weeks)
+        subscribeOnEvents()
     }
 
     private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
@@ -53,11 +54,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         val today = LocalDate.now()
         val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.days[0].date) }
         weeksView.scrollToPosition(weekIndex)
-    }
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        subscribeOnEvents()
     }
 
     private fun subscribeOnEvents() {
