@@ -18,7 +18,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListView(context, attrs),
     StickyListHeadersListView.OnStickyHeaderChangedListener {
 
-    lateinit var onDayChangeListener: (day: DayItem) -> Unit
+    lateinit var onDayChangedListener: (day: DayItem) -> Unit
     private lateinit var events: List<CalendarEvent>
     private var subscription: Subscription? = null
 
@@ -28,7 +28,7 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
 
     override
     fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) =
-        onDayChangeListener.invoke(events[position].day)
+        onDayChangedListener.invoke(events[position].day)
 
     override fun onFinishInflate() {
         super.onFinishInflate()

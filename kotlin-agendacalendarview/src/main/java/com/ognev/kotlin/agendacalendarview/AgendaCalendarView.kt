@@ -10,6 +10,7 @@ import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.bus.Event
 import com.ognev.kotlin.agendacalendarview.calendar.CalendarView
+import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.event.EventsProvider
@@ -29,7 +30,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private lateinit var calendarView: CalendarView
     private lateinit var agendaEvents: MutableList<CalendarEvent>
     private var subscription: Subscription? = null
-    private var calendarController: CalendarController? = null
+    private var onDayChangedListener: ((DayItem) -> Unit)? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_agendacalendar, this, true)
@@ -41,24 +42,24 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         agendaView = findViewById(R.id.agenda_view)
         subscription = BusProvider.instance.toObservable()
             .subscribe { handleEvent(it) }
-        setupOnDayChangeListener()
+        setupAgendaOnDayChangedListener()
     }
 
     private fun handleEvent(event: Event) {
         if (event is DayClicked) {
-            calendarController?.onDaySelected(event.day)
+            onDayChangedListener?.invoke(event.day)
         }
     }
 
-    private fun setupOnDayChangeListener() {
-        agendaView.onDayChangeListener = {
+    private fun setupAgendaOnDayChangedListener() {
+        agendaView.onDayChangedListener = {
             calendarView.scrollToDay(it)
-            calendarController?.onScrollToDate(it.date)
+            onDayChangedListener?.invoke(it)
         }
     }
 
-    fun setCallbacks(calendarController: CalendarController) {
-        this.calendarController = calendarController
+    fun setDayChangedListener(dayListener: (DayItem) -> Unit) {
+        this.onDayChangedListener = dayListener
     }
 
     fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {

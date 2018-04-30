@@ -2,7 +2,7 @@ package com.ognev.kotlin.agendacalendarview.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.ognev.kotlin.agendacalendarview.sample.event.AgendaCalendarController
+import android.util.Log
 import com.ognev.kotlin.agendacalendarview.sample.event.EventsRepository
 import com.ognev.kotlin.agendacalendarview.sample.event.SampleEventAgendaRenderer
 import kotlinx.android.synthetic.main.activity_main.*
@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
     private val minDate = LocalDate.now().withDayOfMonth(1)
     private val maxDate = minDate.plusMonths(5)
     private val eventsRepository = EventsRepository()
-    private val agendaCalendarController = AgendaCalendarController()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         val events = eventsRepository.fetchEvents()
         agendaCalendarView.apply {
             init(minDate, maxDate, eventRenderer, events)
-            setCallbacks(agendaCalendarController)
+            setDayChangedListener { Log.d("MainActivity", "date changed to ${it.date}") }
         }
     }
 
