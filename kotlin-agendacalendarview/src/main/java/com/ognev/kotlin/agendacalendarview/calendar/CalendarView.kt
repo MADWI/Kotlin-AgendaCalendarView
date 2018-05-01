@@ -5,15 +5,12 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
-import com.ognev.kotlin.agendacalendarview.bus.BusProvider
-import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksAdapter
 import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 import kotlinx.android.synthetic.main.calendar.view.*
 import org.joda.time.LocalDate
-import rx.Subscription
 
 /**
  * The calendar view is a freely scrolling view that allows the user to browse between days of the
@@ -24,7 +21,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
     private var selectedDay: DayItem? = null
     private lateinit var weeks: List<WeekItem>
     private var currentWeekIndex = 0
-    private var subscription: Subscription? = null
 
     init {
         inflateWithAttach(R.layout.calendar, true)
@@ -36,18 +32,15 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         daysNamesHeaderView.setBackgroundColor(viewAttributes.daysNamesHeaderColor)
         daysNamesHeaderView.setTextColor(viewAttributes.daysNamesTextColor)
         setupAdapter(weeks, viewAttributes)
-        subscribeOnEvents()
+    }
+
+    fun scrollToDay(day: DayItem) {
+        updateSelectedDay(day)
+        weeksView.scrollToPosition(currentWeekIndex)
     }
 
     private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
         weeksView.adapter = WeeksAdapter(weeks, viewAttributes)
-    }
-
-    private fun subscribeOnEvents() {
-        subscription = BusProvider.instance.toObservable()
-            .subscribe {
-                if (it is DayClicked) updateSelectedDay(it.day)
-            }
     }
 
     private fun updateSelectedDay(dayItem: DayItem) {
@@ -68,15 +61,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
             selectedDay?.isSelected = false
             selectedDay = dayItem
         }
-    }
-
-    fun scrollToDay(day: DayItem) {
-        updateSelectedDay(day)
-        weeksView.scrollToPosition(currentWeekIndex)
-    }
-
-    fun dispose() {
-        subscription?.unsubscribe()
     }
 
     private fun LocalDate.isSameWeek(date: LocalDate): Boolean {

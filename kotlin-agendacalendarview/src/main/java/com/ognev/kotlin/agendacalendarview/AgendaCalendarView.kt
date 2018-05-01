@@ -49,16 +49,15 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
         agendaView.adapter = AgendaAdapter(agendaEvents, eventRenderer)
         calendarView.init(weeks, viewAttributes)
-        moveToDate(LocalDate.now())
+        selectDate(LocalDate.now())
     }
 
-    fun moveToDate(date: LocalDate) =
+    fun selectDate(date: LocalDate) =
         agendaEvents.find { date.isEqual(it.day.date) }
-            ?.let { BusProvider.instance.send(DayClicked(it.day)) }
+            ?.let { scrollAgendaToDate(date) }
 
     fun dispose() {
         subscription?.unsubscribe()
-        calendarView.dispose()
         calendarAnimator.dispose()
     }
 
