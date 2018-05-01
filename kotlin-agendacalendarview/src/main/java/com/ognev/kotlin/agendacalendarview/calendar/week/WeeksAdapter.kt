@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.ognev.kotlin.agendacalendarview.R
 import com.ognev.kotlin.agendacalendarview.attributes.ViewAttributes
-import com.ognev.kotlin.agendacalendarview.bus.BusProvider
-import com.ognev.kotlin.agendacalendarview.bus.DayClicked
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.databinding.DayCellBinding
 import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
@@ -39,7 +37,7 @@ class WeeksAdapter(private val weekItems: List<WeekItem>, private val viewAttrib
                 attributes = viewAttributes
                 executePendingBindings()
             }
-            child.setOnClickListener { BusProvider.instance.send(DayClicked(dayItem)) }
+            child.setOnClickListener { dayItem.isSelected = true }
         }
     }
 

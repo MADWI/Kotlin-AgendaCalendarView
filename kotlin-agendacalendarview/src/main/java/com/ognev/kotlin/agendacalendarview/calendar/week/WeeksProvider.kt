@@ -6,7 +6,7 @@ import org.joda.time.Weeks
 
 class WeeksProvider {
 
-    fun getWeeksBetweenDates(minDate: LocalDate, maxDate: LocalDate): MutableList<WeekItem> {
+    fun getWeeksBetweenDates(minDate: LocalDate, maxDate: LocalDate): List<WeekItem> {
         val startDate = minDate.withDayOfWeek(1)
         val endDate = maxDate.withDayOfWeek(7)
         val weeks = mutableListOf<WeekItem>()
