@@ -22,7 +22,6 @@ import rx.Subscription
 class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     private var selectedDay: DayItem? = null
-    private lateinit var weeksAdapter: WeeksAdapter
     private lateinit var weeks: List<WeekItem>
     private var currentWeekIndex = 0
     private var subscription: Subscription? = null
@@ -37,20 +36,11 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         daysNamesHeaderView.setBackgroundColor(viewAttributes.daysNamesHeaderColor)
         daysNamesHeaderView.setTextColor(viewAttributes.daysNamesTextColor)
         setupAdapter(weeks, viewAttributes)
-        scrollToCurrentWeek(weeks)
         subscribeOnEvents()
     }
 
     private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
-        weeksAdapter = WeeksAdapter(viewAttributes)
-        weeksView.adapter = weeksAdapter
-        weeksAdapter.updateWeeksItems(weeks)
-    }
-
-    private fun scrollToCurrentWeek(weeks: List<WeekItem>) {
-        val today = LocalDate.now()
-        val weekIndex = weeks.indexOfFirst { today.isSameWeek(it.days[0].date) }
-        weeksView.scrollToPosition(weekIndex)
+        weeksView.adapter = WeeksAdapter(weeks, viewAttributes)
     }
 
     private fun subscribeOnEvents() {
@@ -65,10 +55,10 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         val dayWeekIndex = weeks.indexOfFirst { it.days[0].date.isSameWeek(dayItem.date) }
         if (dayWeekIndex != -1) {
             if (dayWeekIndex != currentWeekIndex) {
-                weeksAdapter.notifyItemChanged(currentWeekIndex)
+                weeksView.adapter.notifyItemChanged(currentWeekIndex)
             }
             currentWeekIndex = dayWeekIndex
-            weeksAdapter.notifyItemChanged(dayWeekIndex)
+            weeksView.adapter.notifyItemChanged(dayWeekIndex)
         }
     }
 

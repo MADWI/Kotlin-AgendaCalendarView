@@ -12,18 +12,10 @@ import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.databinding.DayCellBinding
 import com.ognev.kotlin.agendacalendarview.utils.inflateWithAttach
 
-class WeeksAdapter(val viewAttributes: ViewAttributes)
+class WeeksAdapter(private val weekItems: List<WeekItem>, private val viewAttributes: ViewAttributes)
     : RecyclerView.Adapter<WeeksAdapter.WeekViewHolder>() {
 
-    private val weeks = mutableListOf<WeekItem>()
-
-    fun updateWeeksItems(weekItems: List<WeekItem>) {
-        weeks.clear()
-        weeks.addAll(weekItems)
-        notifyDataSetChanged()
-    }
-
-    override fun getItemCount() = weeks.size
+    override fun getItemCount() = weekItems.size
 
     override
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -31,7 +23,7 @@ class WeeksAdapter(val viewAttributes: ViewAttributes)
 
     override
     fun onBindViewHolder(weekViewHolder: WeekViewHolder, position: Int) =
-        weekViewHolder.bind(weeks[position])
+        weekViewHolder.bind(weekItems[position])
 
     inner class WeekViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
