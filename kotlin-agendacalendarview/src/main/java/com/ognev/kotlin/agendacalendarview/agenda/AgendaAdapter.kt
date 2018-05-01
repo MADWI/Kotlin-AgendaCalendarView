@@ -12,10 +12,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
  * Adapter for the agenda, implements StickyListHeadersAdapter.
  * Days as sections and CalendarEvents as list items.
  */
-class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
-
-    lateinit var eventRenderer: CalendarEventRenderer<CalendarEvent>
-    private val events: MutableList<CalendarEvent> = mutableListOf()
+class AgendaAdapter(private val events: List<CalendarEvent>, private val eventRenderer: CalendarEventRenderer<CalendarEvent>)
+    : BaseAdapter(), StickyListHeadersAdapter {
 
     override fun getHeaderView(position: Int, convertView: View?, parent: ViewGroup): View {
         var headerView = convertView
@@ -39,11 +37,6 @@ class AgendaAdapter : BaseAdapter(), StickyListHeadersAdapter {
         val view = parent.inflateWithAttach(getEventLayout(event), false)
         eventRenderer.setupEventItemView(view, event, position)
         return view
-    }
-
-    fun setEvents(events: List<CalendarEvent>) {
-        this.events.clear()
-        this.events.addAll(events)
     }
 
     private fun getEventLayout(event: CalendarEvent) = eventRenderer.getEventLayout(event.hasEvent())

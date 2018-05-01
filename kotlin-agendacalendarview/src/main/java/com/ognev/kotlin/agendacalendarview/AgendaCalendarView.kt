@@ -3,6 +3,7 @@ package com.ognev.kotlin.agendacalendarview
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import com.ognev.kotlin.agendacalendarview.agenda.AgendaAdapter
 import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.bus.BusProvider
 import com.ognev.kotlin.agendacalendarview.bus.DayClicked
@@ -39,6 +40,28 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         setupCalendarToggleButtonClickListener()
     }
 
+    fun setDayChangedListener(dayListener: (DayItem) -> Unit) {
+        this.onDayChangedListener = dayListener
+    }
+
+    fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
+        val weeks = weeksProvider.getWeeksBetweenDates(minDate, maxDate)
+        this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
+        agendaView.adapter = AgendaAdapter(agendaEvents, eventRenderer)
+        calendarView.init(weeks, viewAttributes)
+        moveToDate(LocalDate.now())
+    }
+
+    fun moveToDate(date: LocalDate) =
+        agendaEvents.find { date.isEqual(it.day.date) }
+            ?.let { BusProvider.instance.send(DayClicked(it.day)) }
+
+    fun dispose() {
+        subscription?.unsubscribe()
+        calendarView.dispose()
+        calendarAnimator.dispose()
+    }
+
     private fun subscribeOnEvents() {
         subscription = BusProvider.instance.toObservable()
             .subscribe { handleEvent(it) }
@@ -47,14 +70,15 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private fun handleEvent(event: Event) {
         if (event is DayClicked) {
             onDayChangedListener?.invoke(event.day)
-            agendaView.scrollToDate(event.day.date)
+            scrollAgendaToDate(event.day.date)
         }
     }
 
     private fun setupAgendaOnDayChangedListener() {
-        agendaView.onDayChangedListener = {
-            calendarView.scrollToDay(it)
-            onDayChangedListener?.invoke(it)
+        agendaView.onHeaderChangedListener = {
+            val day = agendaEvents[it].day
+            calendarView.scrollToDay(day)
+            onDayChangedListener?.invoke(day)
         }
     }
 
@@ -69,25 +93,8 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         }
     }
 
-    fun setDayChangedListener(dayListener: (DayItem) -> Unit) {
-        this.onDayChangedListener = dayListener
-    }
-
-    fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
-        val weeks = weeksProvider.getWeeksBetweenDates(minDate, maxDate)
-        this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
-        agendaView.init(agendaEvents, eventRenderer)
-        calendarView.init(weeks, viewAttributes)
-        moveToDate(LocalDate.now())
-    }
-
-    fun moveToDate(date: LocalDate) =
-        agendaEvents.find { date.isEqual(it.day.date) }
-            ?.let { BusProvider.instance.send(DayClicked(it.day)) }
-
-    fun dispose() {
-        subscription?.unsubscribe()
-        calendarView.dispose()
-        calendarAnimator.dispose()
+    private fun scrollAgendaToDate(date: LocalDate) {
+        val selection = agendaEvents.indexOfFirst { date.isEqual(it.day.date) }
+        agendaView.setSelection(selection)
     }
 }
