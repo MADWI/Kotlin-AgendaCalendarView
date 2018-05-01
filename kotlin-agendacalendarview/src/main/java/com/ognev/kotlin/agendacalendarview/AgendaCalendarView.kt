@@ -26,11 +26,10 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private val weeksProvider = WeeksProvider()
     private val eventsProvider = EventsProvider()
     private val viewAttributes = AttributesProvider().getAttributes(context, attrs)
+    private val calendarAnimator: CalendarAnimator by lazy { CalendarAnimator(calendarView) }
     private lateinit var agendaEvents: MutableList<CalendarEvent>
     private var subscription: Subscription? = null
     private var onDayChangedListener: ((DayItem) -> Unit)? = null
-    private val calendarAnimator: CalendarAnimator by lazy { CalendarAnimator(calendarView) }
-    private var isCollapsed = true
 
     init {
         inflateWithAttach(R.layout.agenda_calendar, true)
@@ -59,14 +58,13 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     }
 
     private fun setupCalendarToggleButtonClickListener() {
-        calendarToggleButton.setOnClickListener {
-            if (isCollapsed) {
+        expandCalendarButton.setOnClickListener {
+            if (expandCalendarButton.willAnimateForward()) {
                 calendarAnimator.expandView()
-                isCollapsed = false
             } else {
-                isCollapsed = true
                 calendarAnimator.collapseView()
             }
+            expandCalendarButton.startAnimation()
         }
     }
 

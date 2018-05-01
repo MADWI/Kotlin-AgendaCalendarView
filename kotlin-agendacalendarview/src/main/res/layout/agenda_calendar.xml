@@ -24,13 +24,14 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/calendarToggleButton"
+    <com.ognev.kotlin.agendacalendarview.ui.ReverseAnimatedButton
+        android:id="@+id/expandCalendarButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/ic_expand_white_24dp"
+        app:animation="@drawable/expand_to_collapse"
+        app:reverseAnimation="@drawable/collapse_to_expand"
         app:layout_anchor="@id/calendarView"
         app:layout_anchorGravity="bottom|end"
         app:useCompatPadding="true" />

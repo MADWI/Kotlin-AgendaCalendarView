@@ -12,4 +12,9 @@
         <attr name="cellEventMarkColor" format="color" />
         <attr name="cellEventPlusShowThreshold" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="ReverseAnimatedButton">
+        <attr name="animation" format="color" />
+        <attr name="reverseAnimation" format="color" />
+    </declare-styleable>
 </resources>

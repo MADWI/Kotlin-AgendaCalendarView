@@ -3,4 +3,5 @@
     <integer name="height_animation_duration">200</integer>
     <integer name="calendar_expanded_rows">5</integer>
     <integer name="calendar_collapsed_rows">2</integer>
+    <integer name="collapse_expand_icon_animation_duration">@android:integer/config_longAnimTime</integer>
 </resources>

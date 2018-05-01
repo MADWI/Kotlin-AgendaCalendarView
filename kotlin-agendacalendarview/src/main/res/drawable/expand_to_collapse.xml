@@ -1,0 +1,24 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/ic_expand">
+
+    <target android:name="chevron">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:duration="@integer/collapse_expand_icon_animation_duration"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:propertyName="translateY"
+                android:valueFrom="15"
+                android:valueTo="9" />
+        </aapt:attr>
+    </target>
+
+    <target
+        android:name="leftBar"
+        android:animation="@animator/rotation_from_135_to_45" />
+
+    <target
+        android:name="rightBar"
+        android:animation="@animator/rotation_from_45_to_135" />
+
+</animated-vector>
