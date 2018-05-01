@@ -47,6 +47,7 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     private fun handleEvent(event: Event) {
         if (event is DayClicked) {
             onDayChangedListener?.invoke(event.day)
+            agendaView.scrollToDate(event.day.date)
         }
     }
 
@@ -88,6 +89,5 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
         subscription?.unsubscribe()
         calendarView.dispose()
         calendarAnimator.dispose()
-        agendaView.dispose()
     }
 }

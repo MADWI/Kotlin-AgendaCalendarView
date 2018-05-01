@@ -3,14 +3,10 @@ package com.ognev.kotlin.agendacalendarview.agenda
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.ognev.kotlin.agendacalendarview.bus.BusProvider
-import com.ognev.kotlin.agendacalendarview.bus.DayClicked
-import com.ognev.kotlin.agendacalendarview.bus.Event
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
 import com.ognev.kotlin.agendacalendarview.event.CalendarEvent
 import com.ognev.kotlin.agendacalendarview.render.CalendarEventRenderer
 import org.joda.time.LocalDate
-import rx.Subscription
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView
 
 class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListView(context, attrs),
@@ -18,7 +14,6 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
 
     lateinit var onDayChangedListener: (day: DayItem) -> Unit
     private lateinit var events: List<CalendarEvent>
-    private var subscription: Subscription? = null
 
     init {
         setOnStickyHeaderChangedListener(this)
@@ -28,12 +23,6 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
     fun onStickyHeaderChanged(stickyListHeadersListView: StickyListHeadersListView, header: View, position: Int, headerId: Long) =
         onDayChangedListener.invoke(events[position].day)
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        subscription = BusProvider.instance.toObservable()
-            .subscribe { event -> handleEvent(event) }
-    }
-
     fun init(events: List<CalendarEvent>, eventRenderer: CalendarEventRenderer<CalendarEvent>) {
         this.events = events
         val agendaAdapter = AgendaAdapter()
@@ -42,15 +31,7 @@ class AgendaView(context: Context, attrs: AttributeSet) : StickyListHeadersListV
         adapter = agendaAdapter
     }
 
-    fun dispose() = subscription?.unsubscribe()
-
-    private fun handleEvent(event: Event) {
-        when (event) {
-            is DayClicked -> scrollToDate(event.day.date)
-        }
-    }
-
-    private fun scrollToDate(date: LocalDate) {
+    fun scrollToDate(date: LocalDate) {
         val selection = events.indexOfFirst { date.compareTo(it.day.date) == 0 }
         post { setSelection(selection) }
     }

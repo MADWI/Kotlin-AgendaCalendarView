@@ -45,6 +45,7 @@ class WeeksAdapter(val viewAttributes: ViewAttributes)
             DataBindingUtil.bind<DayCellBinding>(child)?.apply {
                 day = dayItem
                 attributes = viewAttributes
+                executePendingBindings()
             }
             child.setOnClickListener { BusProvider.instance.send(DayClicked(dayItem)) }
         }
