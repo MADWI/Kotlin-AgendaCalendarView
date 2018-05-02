@@ -41,31 +41,29 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
     }
 
     fun init(minDate: LocalDate, maxDate: LocalDate, eventRenderer: CalendarEventRenderer<CalendarEvent>, events: List<CalendarEvent>) {
-        val weeks = weeksProvider.getWeeksBetweenDates(minDate, maxDate)
-        setupWeeksViewModel(weeks)
-        this.agendaEvents = eventsProvider.getAgendaEvents(events, weeks)
+        val weekItems = weeksProvider.getWeeksBetweenDates(minDate, maxDate)
+        this.agendaEvents = eventsProvider.getAgendaEvents(events, weekItems)
         agendaView.adapter = AgendaAdapter(agendaEvents, eventRenderer)
-        calendarView.init(weeks, viewAttributes)
+        setupWeeksViewModel(weekItems)
+        calendarView.init(weekItems, viewAttributes)
         selectDate(LocalDate.now())
     }
 
     fun selectDate(date: LocalDate) =
         agendaEvents.find { date.isEqual(it.day.date) }
-            ?.let { scrollAgendaToDate(date) }
+            ?.let { it.day.isSelected = true }
 
     fun dispose() = calendarAnimator.dispose()
 
     private fun setupWeeksViewModel(weekItems: List<WeekItem>) {
-        WeeksViewModel(weekItems) {
-            scrollAgendaToDate(it.date)
-            onDayChangedListener?.invoke(it)
-        }
+        WeeksViewModel(weekItems) { calendarView.scrollToWeekIndex(it) }
     }
 
     private fun setupAgendaOnDayChangedListener() {
         agendaView.onHeaderChangedListener = {
             val day = agendaEvents[it].day
-            calendarView.scrollToDay(day)
+            day.isSelected = true
+            scrollAgendaToDate(day.date)
             onDayChangedListener?.invoke(day)
         }
     }
