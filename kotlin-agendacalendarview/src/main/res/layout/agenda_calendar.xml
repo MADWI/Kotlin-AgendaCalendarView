@@ -12,7 +12,8 @@
         <com.ognev.kotlin.agendacalendarview.calendar.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/calendar_two_rows_height" />
+            android:layout_height="@dimen/calendar_two_rows_height"
+            android:orientation="vertical" />
 
         <com.ognev.kotlin.agendacalendarview.agenda.AgendaView
             android:id="@+id/agendaView"
@@ -31,9 +32,9 @@
         android:clickable="true"
         android:focusable="true"
         app:animation="@drawable/expand_to_collapse"
-        app:reverseAnimation="@drawable/collapse_to_expand"
         app:layout_anchor="@id/calendarView"
         app:layout_anchorGravity="bottom|end"
+        app:reverseAnimation="@drawable/collapse_to_expand"
         app:useCompatPadding="true" />
 
 </android.support.design.widget.CoordinatorLayout>

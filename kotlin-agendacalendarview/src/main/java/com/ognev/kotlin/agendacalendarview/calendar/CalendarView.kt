@@ -18,8 +18,6 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
 
     init {
         inflateWithAttach(R.layout.calendar, true)
-        //TODO move to xml
-        orientation = VERTICAL
     }
 
     fun init(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
