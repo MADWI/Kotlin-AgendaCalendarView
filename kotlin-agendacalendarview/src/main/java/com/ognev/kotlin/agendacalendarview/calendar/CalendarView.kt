@@ -26,7 +26,7 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         setupAdapter(weeks, viewAttributes)
     }
 
-    fun scrollToWeekIndex(weekIndex: Int) = weeksView.scrollToPosition(weekIndex)
+    fun scrollToWeekIndex(weekIndex: Int) = post { weeksView.scrollToPosition(weekIndex) }
 
     private fun setupAdapter(weeks: List<WeekItem>, viewAttributes: ViewAttributes) {
         weeksView.adapter = WeeksAdapter(weeks, viewAttributes)

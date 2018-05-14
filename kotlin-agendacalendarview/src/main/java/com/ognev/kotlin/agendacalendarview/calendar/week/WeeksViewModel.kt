@@ -1,17 +1,20 @@
 package com.ognev.kotlin.agendacalendarview.calendar.week
 
 import android.databinding.Observable
+import com.ognev.kotlin.agendacalendarview.calendar.day.AgendaScroll
+import com.ognev.kotlin.agendacalendarview.calendar.day.CalendarClick
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.day.None
 import org.joda.time.LocalDate
 
-class WeeksViewModel(private val weekItems: List<WeekItem>, private val onWeekIndexChanged: (Int) -> Unit) {
+class WeeksViewModel(private val weekItems: List<WeekItem>, private val onWeekIndexChanged: (Int) -> Unit,
+    private val onSelectedDayChanged: (DayItem) -> Unit) {
 
     private var selectedDay: DayItem? = null
 
     init {
-        weekItems.flatMap { it.days }.forEach {
-            setupPropertyChangeCallback(it)
-        }
+        weekItems.flatMap { it.days }
+            .forEach { setupPropertyChangeCallback(it) }
     }
 
     private fun setupPropertyChangeCallback(dayItem: DayItem) =
@@ -20,17 +23,22 @@ class WeeksViewModel(private val weekItems: List<WeekItem>, private val onWeekIn
     private fun unSelectPreviousDay() {
         selectedDay?.apply {
             if (isSelected) {
-                isSelected = false
+                selectedBy = None()
             }
         }
     }
 
-    @Synchronized
     private fun setupSelection(dayItem: DayItem) {
+        if (dayItem == selectedDay) {
+            return
+        }
         unSelectPreviousDay()
-        if (dayItem.isSelected) {
+        if (dayItem.selectedBy !is None) {
             selectedDay = dayItem
-            onWeekIndexChanged(getWeekIndex(dayItem))
+            when (dayItem.selectedBy) {
+                is CalendarClick -> onSelectedDayChanged(dayItem)
+                is AgendaScroll -> onWeekIndexChanged(getWeekIndex(dayItem))
+            }
         }
     }
 

@@ -2,11 +2,15 @@ package com.ognev.kotlin.agendacalendarview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.FrameLayout
 import com.ognev.kotlin.agendacalendarview.agenda.AgendaAdapter
 import com.ognev.kotlin.agendacalendarview.attributes.AttributesProvider
 import com.ognev.kotlin.agendacalendarview.calendar.CalendarAnimator
+import com.ognev.kotlin.agendacalendarview.calendar.day.AgendaScroll
+import com.ognev.kotlin.agendacalendarview.calendar.day.CalendarClick
 import com.ognev.kotlin.agendacalendarview.calendar.day.DayItem
+import com.ognev.kotlin.agendacalendarview.calendar.day.None
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeekItem
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksProvider
 import com.ognev.kotlin.agendacalendarview.calendar.week.WeeksViewModel
@@ -51,21 +55,32 @@ class AgendaCalendarView(context: Context, attrs: AttributeSet) : FrameLayout(co
 
     fun selectDate(date: LocalDate) =
         agendaEvents.find { date.isEqual(it.day.date) }
-            ?.let { it.day.isSelected = true }
+            ?.let { it.day.selectedBy = CalendarClick() }
 
     fun dispose() = calendarAnimator.dispose()
 
     private fun setupWeeksViewModel(weekItems: List<WeekItem>) {
-        WeeksViewModel(weekItems) { calendarView.scrollToWeekIndex(it) }
+        WeeksViewModel(weekItems, {
+            calendarView.scrollToWeekIndex(it)
+            log("onWeekIndexChanged: $it")
+        }, {
+            log("onSelectedDayChanged: ${it.date}, isSelected: ${it.isSelected}")
+            scrollAgendaToDate(it.date)
+        } )
     }
 
     private fun setupAgendaOnDayChangedListener() {
         agendaView.onHeaderChangedListener = {
             val day = agendaEvents[it].day
-            day.isSelected = true
-            scrollAgendaToDate(day.date)
-            onDayChangedListener?.invoke(day)
+            log("onHeaderChangedListener Date: ${day.date}, isSelected: ${day.isSelected}")
+            if (day.selectedBy is None) {
+                day.selectedBy = AgendaScroll()
+            }
         }
+    }
+
+    private fun log(message: String) {
+        Log.e("AgendaCalendar", message)
     }
 
     private fun setupCalendarToggleButtonClickListener() {
