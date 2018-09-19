@@ -24,14 +24,12 @@
 
     </LinearLayout>
 
-    <com.ognev.kotlin.agendacalendarview.ui.ReverseAnimatedButton
+    <com.ognev.kotlin.agendacalendarview.ui.ExpandButton
         android:id="@+id/expandCalendarButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        app:animation="@drawable/expand_to_collapse"
-        app:reverseAnimation="@drawable/collapse_to_expand"
         app:layout_anchor="@id/calendarView"
         app:layout_anchorGravity="bottom|end"
         app:useCompatPadding="true" />

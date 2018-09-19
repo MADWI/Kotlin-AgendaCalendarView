@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <declare-styleable name="AgendaCalendarView">
         <attr name="daysNamesHeaderColor" format="color" />
         <attr name="daysNamesTextColor" format="color" />
@@ -13,8 +14,4 @@
         <attr name="cellEventPlusShowThreshold" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="ReverseAnimatedButton">
-        <attr name="animation" format="color" />
-        <attr name="reverseAnimation" format="color" />
-    </declare-styleable>
 </resources>
