@@ -10,10 +10,10 @@ ext {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -29,19 +29,18 @@ android {
 }
 
 ext {
-    support_version = '27.1.1'
+    support_version = '28.0.0'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'net.danlew:android.joda:2.9.9'
+    api 'net.danlew:android.joda:2.10.1.1'
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:design:$support_version"
     implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    kapt "com.android.databinding:compiler:$gradle_plugin_version"
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

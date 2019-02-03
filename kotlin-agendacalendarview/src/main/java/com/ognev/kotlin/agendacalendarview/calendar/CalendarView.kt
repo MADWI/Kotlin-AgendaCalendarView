@@ -48,10 +48,10 @@ class CalendarView(context: Context, attrs: AttributeSet) : LinearLayout(context
         val dayWeekIndex = weeks.indexOfFirst { it.days[0].date.isSameWeek(dayItem.date) }
         if (dayWeekIndex != -1) {
             if (dayWeekIndex != currentWeekIndex) {
-                weeksView.adapter.notifyItemChanged(currentWeekIndex)
+                weeksView.adapter?.notifyItemChanged(currentWeekIndex)
             }
             currentWeekIndex = dayWeekIndex
-            weeksView.adapter.notifyItemChanged(dayWeekIndex)
+            weeksView.adapter?.notifyItemChanged(dayWeekIndex)
         }
     }
 
